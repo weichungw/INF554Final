@@ -30,7 +30,7 @@
 2. Have you ever observe LA's daily macro behavior.
 3. Traffic volume could inform us the activity level of each part in LA.
 <a name="slide3"></a>
-## Slide 3(vlue of project)
+## Slide 3(value of project)
 1. We could optimize our personal behavior corresponding to it.
 Either benifit to ourself or to the whole society.
     1. During heavy traffic, Google direction could be inaccurate.
