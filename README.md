@@ -1,4 +1,4 @@
-# INF 554 Assignment 4
+# INF 554 Assignment 5
 
 ## Table of Contents
 1. [Slide 1](#slide1)
@@ -25,34 +25,59 @@
 2. Group
 3. Members
 <a name="slide2"></a>
-## Slide 2
-1. what is the story
+## Slide 2(story)
+1. A big city like LA works like an giant organism.
+2. Have you ever observe LA's daily macro behavior.
+3. Traffic volume could inform us the activity level of each part in LA.
 <a name="slide3"></a>
-## Slide 3
-1. interesting, important, useful
+## Slide 3(vlue of project)
+1. We could optimize our personal behavior corresponding to it.
+Either benifit to ourself or to the whole society.
+    1. During heavy traffic, Google direction could be inaccurate.
+    2. All we need is to avoid those red cloud on the map.
+2. The authority could drafts plans to tackle heavy traffic.
 <a name="slide4"></a>
-## Slide 4
-1. Audience
+## Slide 4(Audience)
+1. Any individual driver including uber.
+    1. Uber driver
+    2. Any driver
+2. Government or Any expertise trying to make a plan with macro view
+    1. traffic plan
 <a name="slide5"></a>
 ## Slide 5
-1. contact Prof YaoYi
+1. Indective-Loop Traffic Detectors
+2. LA government
+3. contact Prof YaoYi
 <a name="slide6"></a>
 ## Slide 6
+
 <a name="slide7"></a>
 ## Slide 7
+
 <a name="slide8"></a>
 ## Slide 8
+
 <a name="slide9"></a>
 ## Slide 9
+
 <a name="slide10"></a>
 ## Slide 10
+
 <a name="slide11"></a>
 ## Slide 11
+
 <a name="slide12"></a>
 ## Slide 12
+
 <a name="slide13"></a>
 ## Slide 13
+
 <a name="slide14"></a>
 ## Slide 14
+
 <a name="slide15"></a>
 ## Slide 15
+
+<a name="ref"></a>
+## Reference
+
