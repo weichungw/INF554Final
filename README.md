@@ -24,11 +24,13 @@
 1. Title
 2. Group
 3. Members
+
 <a name="slide2"></a>
 ## Slide 2(story)
 1. A big city like LA works like an giant organism.
 2. Have you ever observe LA's daily macro behavior.
 3. Traffic volume could inform us the activity level of each part in LA.
+
 <a name="slide3"></a>
 ## Slide 3(value of project)
 1. We could optimize our personal behavior corresponding to it.
@@ -36,6 +38,7 @@ Either benifit to ourself or to the whole society.
     1. During heavy traffic, Google direction could be inaccurate.
     2. All we need is to avoid those red cloud on the map.
 2. The authority could drafts plans to tackle heavy traffic.
+
 <a name="slide4"></a>
 ## Slide 4(Audience)
 1. Any individual driver including uber.
@@ -43,11 +46,13 @@ Either benifit to ourself or to the whole society.
     2. Any driver
 2. Government or Any expertise trying to make a plan with macro view
     1. traffic plan
+
 <a name="slide5"></a>
 ## Slide 5
 1. Indective-Loop Traffic Detectors
 2. LA government
 3. contact Prof YaoYi
+
 <a name="slide6"></a>
 ## Slide 6
 
@@ -64,7 +69,9 @@ Either benifit to ourself or to the whole society.
 ## Slide 10
 
 <a name="slide11"></a>
-## Slide 11
+## Slide 11(Tool)
+1. mapbox
+2. leaflet
 
 <a name="slide12"></a>
 ## Slide 12
