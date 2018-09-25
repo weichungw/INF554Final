@@ -55,15 +55,53 @@ Either benifit to ourself or to the whole society.
 
 <a name="slide6"></a>
 ## Slide 6
+### Interactive Visual
+
+1. **Basic Charts**
+	1. TimeLine Bar
+	2. Time Granularity
+2. Heat Map
+	1. TimeLine Bar
+	2. Time Granularity
+
+Different time and granularity, different chart contents.
 
 <a name="slide7"></a>
 ## Slide 7
+### Interactive Visual
+1. Basic Charts
+	1. TimeLine Bar
+	2. Time Granularity
+2. **Heat Map**
+	1. TimeLine Bar
+	2. Time Granularity
+
+Different time and granularity, different map contents. Users can zoom in, zoom out, shift left and shift right to see detail information.
 
 <a name="slide8"></a>
 ## Slide 8
+### Design Consideration
+1. Numerical
+	1. Speed
+	2. Traffic Flow
+	3. Time
+	4. Latitude & Longitude
+2. Categorical
+	1. Road
+	2. Direction
+
+Our visualization is high dimensional. Specific dimensions list above.
 
 <a name="slide9"></a>
 ## Slide 9
+### Cool
+1. Map
+	1. Dynamic
+	2. Interactive 
+2. Charts
+	1. Information 
+	2. Story 
+	3. Stucture
 
 <a name="slide10"></a>
 ## Slide 10
