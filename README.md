@@ -166,8 +166,8 @@ Our visualization is high dimensional. Specific dimensions list above.
  Ruolei:  Html and JS 
 <a name="ref"></a>
 ## Reference
-(Angularjs)[https://angularjs.org/]
-(flowing data)[https://flowingdata.com/]
+* Angularjs[https://angularjs.org/]
+* flowing data[https://flowingdata.com/]
 
 
 
