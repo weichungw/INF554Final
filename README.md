@@ -116,7 +116,8 @@ Our visualization is high dimensional. Specific dimensions list above.
 3. Some gave the information with the text, just give the description and conclusion 
 4. Some chart is not easy to understand 
 <a name="slide11"></a>
-## Slide 11(Tool)
+## Slide 11
+### Tool
 1. mapbox
 2. leaflet
 3. AngularJS 
