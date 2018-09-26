@@ -13,7 +13,7 @@
       "frameId": "frame5819",
       "title": "intro",
       "timeoutMs": 20000,
-      "timeoutEnable": true,
+      "timeoutEnable": false,
       "transitionDurationMs": 1000,
       "showInFrameList": true,
       "showFrameNumber": true,
@@ -962,7 +962,7 @@
   ],
   "elementsToHide": [],
   "selectedFrames": [
-    "frame9630"
+    "frame5819"
   ],
   "selectedLayers": [
     "layer1",
