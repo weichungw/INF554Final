@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as d3 from 'd3';
+import * as d3_tile from 'd3-tile';
 
 @Component({
   selector: 'app-page-map',
@@ -38,7 +39,8 @@ export class PageMapComponent implements OnInit {
       .text("Danger Zoon");
       
 
-    this.projection = d3.geoAlbersUsa()
+    //this.projection = d3.geoAlbersUsa()
+    this.projection = d3.geoMercator()
 
 
     var rMap_name= "./src/assets/zip_code.geojson";
@@ -48,6 +50,9 @@ export class PageMapComponent implements OnInit {
   }
 
   async draw(rMap_name:string, shoot_name:string){
+    var pi = Math.PI;
+    var tau = 2*pi;
+
     var map_data= (await d3.json(rMap_name))
     //console.log(data)
     var map_features=map_data["features"]
@@ -55,6 +60,21 @@ export class PageMapComponent implements OnInit {
     this.projection.fitSize([this.width,this.height],map_data)
     var path =d3.geoPath(this.projection)
       .pointRadius(3);
+
+    var tile = d3_tile.tile();
+    var tiles =tile.size([this.width,this.height])
+      .scale(this.projection.scale()*tau)
+      .translate(this.projection([0,0]))();
+    //.translate([0.0,0.0])();
+
+    this.canvas.selectAll("image")
+      .data(tiles)
+    .enter().append("image")
+      .attr("xlink:href", function(d) {console.log(d); return "http://" + "abc"[d.y % 3] + ".tile.openstreetmap.org/" + d.z + "/" + d.x + "/" + d.y + ".png"; })
+      .attr("x", function(d) { return (d.x + tiles.translate[0]) * tiles.scale; })
+      .attr("y", function(d) { return (d.y + tiles.translate[1]) * tiles.scale; })
+      .attr("width", tiles.scale)
+      .attr("height", tiles.scale);
     
     var countries=this.canvas.selectAll(".zip-path")
       .data(map_features)
