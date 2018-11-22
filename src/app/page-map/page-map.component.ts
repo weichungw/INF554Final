@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import * as d3 from 'd3';
 import * as d3_tile from 'd3-tile';
 
@@ -13,13 +13,13 @@ export class PageMapComponent implements OnInit {
   height;
   canvas;
 
-  constructor() { }
+  constructor(private el:ElementRef) { }
 
   ngOnInit() {
-
-    var div = d3.select("#la-div");
-    var c_width=1200;
-    var c_height=700;
+    var div = d3.select("#map-div");
+    console.log(div.node().getBoundingClientRect());
+    var c_width=div.node().getBoundingClientRect().width;
+    var c_height=900;
     var svg = div.append("svg")
       .attr("width",c_width)
       .attr("height",c_height);
@@ -39,11 +39,9 @@ export class PageMapComponent implements OnInit {
       .text("Danger Zoon");
       
 
-    //this.projection = d3.geoAlbersUsa()
     this.projection = d3.geoMercator()
 
 
-    //var rMap_name= "./src/assets/zip_code.geojson";
     var shoot_name= "./src/assets/dangerIntersection.geojson";
     this.draw(shoot_name)
 
@@ -53,17 +51,15 @@ export class PageMapComponent implements OnInit {
     var pi = Math.PI;
     var tau = 2*pi;
 
-    //var map_data= (await d3.json(rMap_name))
-    //var map_features=map_data["features"]
+    var map_scale = 59672.941;
+    var map_center=[-118.120931,34.018205];
 
-    //this.projection.fitSize([this.width,this.height],map_data)
-    this.projection.scale(59672.941)
-      .center([-118.120931,34.018205]);
-    // 34.018205, -118.120931
-    // 26672.94107978864
-    
-    var path =d3.geoPath(this.projection)
-      .pointRadius(3);
+
+    this.projection.scale(map_scale)
+      .center(map_center);
+
+    //var geopath =d3.geoPath(this.projection)
+    //  .pointRadius(3);
 
     var tile = d3_tile.tile();
     var tiles =tile.size([this.width,this.height])
@@ -74,21 +70,11 @@ export class PageMapComponent implements OnInit {
     this.canvas.selectAll("image")
       .data(tiles)
     .enter().append("image")
-      .attr("xlink:href", function(d) { return "http://" + "abc"[d.y % 3] + ".tile.openstreetmap.org/" + d.z + "/" + d.x + "/" + d.y + ".png"; })
+      .attr("xlink:href", d=> this.getStamenMap(d.x, d.y, d.z) )
       .attr("x", function(d) { return (d.x + tiles.translate[0]) * tiles.scale; })
       .attr("y", function(d) { return (d.y + tiles.translate[1]) * tiles.scale; })
       .attr("width", tiles.scale)
       .attr("height", tiles.scale);
-    
-    //var countries=this.canvas.selectAll(".zip-path")
-    //  .data(map_features)
-    //  .enter().append("path")
-    //  .attr("d", d=>path(d))
-    //  .classed("zip-path",true)
-    //  .style("fill","#E5E8E8")
-    //  .style("stroke","#5D6D7E")
-    //  .attr("pointer-events","none");
-
     
     var shoot_data =(await d3.json(shoot_name))
     var shoot_features=shoot_data["features"]
@@ -127,9 +113,17 @@ export class PageMapComponent implements OnInit {
     //      .style("opacity",0);
 
     //})
+  }
 
+  getStamenMap( x:number, y:number, z:number, style:string="terrain"): string{
+    // possible styles 1.Toner, 2.Terrain 3.watercolor
+    var url:string ="http://" + "abc"[y % 3] + ".tile.stamen.com/"+style+"/" + z + "/" + x + "/" + y + ".png"; 
+    return url;
+  }
 
-
+  getOpenMap( x:number, y:number, z:number): string{
+    var url:string ="http://" + "abc"[y % 3] + ".tile.openstreetmap.org/" + z + "/" + x + "/" + y + ".png"; 
+    return url;
   }
 
 }
