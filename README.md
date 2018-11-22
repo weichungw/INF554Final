@@ -164,11 +164,24 @@ Our visualization is high dimensional. Specific dimensions list above.
  Wang:  Prepare the data, and know about the data very well
  Lu: Write the JS, UI 
  Ruolei:  Html and JS 
+
+### Library
+* d3-tiles
+* rxjs
+* openstreet map server
+
+### REcord
+* how we handle large data
+* angular router
+* how do d3 map work with tiles
+
+
 <a name="ref"></a>
 ## Reference
 * Angularjs[https://angularjs.org/]
 * flowing data[https://flowingdata.com/]
-
+* CHP code[https://lostcoastoutpost.com/chpwatch/codes/]
+* Icons []
 
 
 

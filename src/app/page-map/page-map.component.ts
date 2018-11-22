@@ -43,21 +43,25 @@ export class PageMapComponent implements OnInit {
     this.projection = d3.geoMercator()
 
 
-    var rMap_name= "./src/assets/zip_code.geojson";
+    //var rMap_name= "./src/assets/zip_code.geojson";
     var shoot_name= "./src/assets/dangerIntersection.geojson";
-    this.draw(rMap_name, shoot_name)
+    this.draw(shoot_name)
 
   }
 
-  async draw(rMap_name:string, shoot_name:string){
+  async draw(shoot_name:string){
     var pi = Math.PI;
     var tau = 2*pi;
 
-    var map_data= (await d3.json(rMap_name))
-    //console.log(data)
-    var map_features=map_data["features"]
+    //var map_data= (await d3.json(rMap_name))
+    //var map_features=map_data["features"]
 
-    this.projection.fitSize([this.width,this.height],map_data)
+    //this.projection.fitSize([this.width,this.height],map_data)
+    this.projection.scale(59672.941)
+      .center([-118.120931,34.018205]);
+    // 34.018205, -118.120931
+    // 26672.94107978864
+    
     var path =d3.geoPath(this.projection)
       .pointRadius(3);
 
@@ -70,20 +74,20 @@ export class PageMapComponent implements OnInit {
     this.canvas.selectAll("image")
       .data(tiles)
     .enter().append("image")
-      .attr("xlink:href", function(d) {console.log(d); return "http://" + "abc"[d.y % 3] + ".tile.openstreetmap.org/" + d.z + "/" + d.x + "/" + d.y + ".png"; })
+      .attr("xlink:href", function(d) { return "http://" + "abc"[d.y % 3] + ".tile.openstreetmap.org/" + d.z + "/" + d.x + "/" + d.y + ".png"; })
       .attr("x", function(d) { return (d.x + tiles.translate[0]) * tiles.scale; })
       .attr("y", function(d) { return (d.y + tiles.translate[1]) * tiles.scale; })
       .attr("width", tiles.scale)
       .attr("height", tiles.scale);
     
-    var countries=this.canvas.selectAll(".zip-path")
-      .data(map_features)
-      .enter().append("path")
-      .attr("d", d=>path(d))
-      .classed("zip-path",true)
-      .style("fill","#E5E8E8")
-      .style("stroke","#5D6D7E")
-      .attr("pointer-events","none");
+    //var countries=this.canvas.selectAll(".zip-path")
+    //  .data(map_features)
+    //  .enter().append("path")
+    //  .attr("d", d=>path(d))
+    //  .classed("zip-path",true)
+    //  .style("fill","#E5E8E8")
+    //  .style("stroke","#5D6D7E")
+    //  .attr("pointer-events","none");
 
     
     var shoot_data =(await d3.json(shoot_name))
