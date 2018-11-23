@@ -129,25 +129,13 @@ export class PageMapComponent implements OnInit {
           d=>d.properties.name)
           .enter().append("circle")
           .classed("hazzard",true)
+          .attr('name',d=>d.properties.name)
           .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
           .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
           .attr("r",d=>d.properties.count/10)
           .style("fill","red")
-          .attr("opacity","0.5")
-        .on("mouseover",function(d){
-            tooltip.transition()
-              .duration(200)
-              .style("opacity",0.8);
-                tooltip.html("Location: "+d["properties"]["name"]+
-                  "<br/>Count: "+d["properties"]["count"])
-              .style("left",(d3.event.pageX +10)+ "px")
-              .style("top",(d3.event.pageY - 28) + "px");
-
-        }).on("mouseleave",function(d){
-            tooltip.transition()
-              .duration(200)
-              .style("opacity",0);
-        })
+          .style("opacity","0.5");
+        this.registerToolTip();
     });
   }
   updateMap($event){
@@ -158,37 +146,33 @@ export class PageMapComponent implements OnInit {
 
     let hazzards=canvas.selectAll(".hazzard")
       .data(this.geo_feats.filter(d=>this.filterHazzards(d)),
-        d=>d.properties.count)
+        d=>d.properties.name);
     //update
-    hazzards
-      .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
-      .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
-      .attr("r",d=>d.properties.count/10)
-      .style("fill","red")
-      .attr("opacity","0.5");
+    //hazzards
+    //  .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
+    //  .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
+    //  .attr("r",d=>d.properties.count/10)
+    //  .style("fill","red")
+    //  .attr("opacity","0.5");
     //append
     hazzards.enter().append('circle')
     .classed('hazzard', true)
+      .attr('name',d=>d.properties.name)
       .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
       .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
       .attr("r",d=>d.properties.count/10)
       .style("fill","red")
-      .attr("opacity","0.5")
-      .on("mouseover",function(d){
-          tooltip.transition()
-            .duration(200)
-            .style("opacity",0.8);
-              tooltip.html("Location: "+d["properties"]["name"]+
-                "<br/>Count: "+d["properties"]["count"])
-            .style("left",(d3.event.pageX +10)+ "px")
-            .style("top",(d3.event.pageY - 28) + "px");
+      .style("opacity",0.0);
+    
+    canvas.selectAll(".hazzard")
+      .transition().duration(1000)
+      .style("opacity",0.5)
 
-      }).on("mouseleave",function(d){
-          tooltip.transition()
-            .duration(200)
-            .style("opacity",0);
-      });
-    hazzards.exit().remove();
+    hazzards.exit()
+      .transition().duration(1000)
+      .style('opacity', 1e-6)
+      .remove() ;
+    this.registerToolTip();
   }
 
   filterHazzards(data):boolean{
@@ -238,7 +222,14 @@ export class PageMapComponent implements OnInit {
       .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
       .attr("r",d=>d.properties.count/10)
       .style("fill","red")
-      .attr("opacity","0.5")
+      .attr("opacity","0.5");
+      this.registerToolTip();
+  }
+
+  // Helper
+  registerToolTip(){
+    let tooltip = this.tooltip;
+    this.canvas.selectAll(".hazzard")
       .on("mouseover",function(d){
           tooltip.transition()
             .duration(200)
