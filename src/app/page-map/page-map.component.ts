@@ -125,7 +125,8 @@ export class PageMapComponent implements OnInit {
         this.geo_feats=geo_feats;
 
         canvas.selectAll(".hazzard")
-          .data(geo_feats,d=>d.properties.name)
+        .data(geo_feats.filter(d=>this.filterHazzards(d)),
+          d=>d.properties.name)
           .enter().append("circle")
           .classed("hazzard",true)
           .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
@@ -172,7 +173,21 @@ export class PageMapComponent implements OnInit {
       .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
       .attr("r",d=>d.properties.count/10)
       .style("fill","red")
-      .attr("opacity","0.5");
+      .attr("opacity","0.5")
+      .on("mouseover",function(d){
+          tooltip.transition()
+            .duration(200)
+            .style("opacity",0.8);
+              tooltip.html("Location: "+d["properties"]["name"]+
+                "<br/>Count: "+d["properties"]["count"])
+            .style("left",(d3.event.pageX +10)+ "px")
+            .style("top",(d3.event.pageY - 28) + "px");
+
+      }).on("mouseleave",function(d){
+          tooltip.transition()
+            .duration(200)
+            .style("opacity",0);
+      });
     hazzards.exit().remove();
   }
 
@@ -215,14 +230,29 @@ export class PageMapComponent implements OnInit {
 
     canvas.selectAll(".hazzard").remove();
     canvas.selectAll(".hazzard")
-      .data(this.geo_feats,d=>d.properties.name)
+      .data(this.geo_feats.filter(d=>this.filterHazzards(d)),
+        d=>d.properties.name)
       .enter().append('circle')
     .classed('hazzard', true)
       .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
       .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
       .attr("r",d=>d.properties.count/10)
       .style("fill","red")
-      .attr("opacity","0.5");
+      .attr("opacity","0.5")
+      .on("mouseover",function(d){
+          tooltip.transition()
+            .duration(200)
+            .style("opacity",0.8);
+              tooltip.html("Location: "+d["properties"]["name"]+
+                "<br/>Count: "+d["properties"]["count"])
+            .style("left",(d3.event.pageX +10)+ "px")
+            .style("top",(d3.event.pageY - 28) + "px");
+
+      }).on("mouseleave",function(d){
+          tooltip.transition()
+            .duration(200)
+            .style("opacity",0);
+      });
   }
 
   getTiles(x:number, y:number, z:number){
