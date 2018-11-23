@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { GeoJsonService } from '../geo-json.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import * as d3 from 'd3';
 import * as d3_tile from 'd3-tile';
+
+import { GeoJsonService } from '../geo-json.service';
 
 @Component({
   selector: 'app-page-map',
@@ -58,7 +61,7 @@ export class PageMapComponent implements OnInit {
     this.draw()
   }
 
-  async draw(){
+  draw(){
     var tau = 2*Math.PI;
 
     // Render Tiles
@@ -81,36 +84,34 @@ export class PageMapComponent implements OnInit {
     let canvas= this.canvas;
     let projection = this.projection;
 
+    this.geojsonService.getGeoData().subscribe({
+      next(geodata){
+        var geo_feats=geodata["features"];
 
-    console.log("fuck");
-    this.geojsonService.getGeoData().subscribe(next(geodata){
-      console.log(geodata);
-      var geo_feats=geodata["features"];
+        canvas.selectAll(".hazzard")
+          .data(geo_feats)
+          .enter().append("circle")
+          .classed("hazzard",true)
+          .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
+          .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
+          .attr("r",d=>d.properties.count/10)
+          .style("fill","red")
+          .attr("opacity","0.5")
+        .on("mouseover",function(d){
+            tooltip.transition()
+              .duration(200)
+              .style("opacity",0.8);
+                tooltip.html("Location: "+d["properties"]["name"]+
+                  "<br/>Count: "+d["properties"]["count"])
+              .style("left",(d3.event.pageX +10)+ "px")
+              .style("top",(d3.event.pageY - 28) + "px");
 
-      canvas.selectAll(".hazzard")
-        .data(geo_feats)
-        .enter().append("circle")
-        .classed("hazzard",true)
-        .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
-        .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
-        .attr("r",d=>d.properties.count/10)
-        .style("fill","red")
-        .attr("opacity","0.5")
-      .on("mouseover",function(d){
-          tooltip.transition()
-            .duration(200)
-            .style("opacity",0.8);
-              tooltip.html("Location: "+d["properties"]["name"]+
-                "<br/>Count: "+d["properties"]["count"])
-            .style("left",(d3.event.pageX +10)+ "px")
-            .style("top",(d3.event.pageY - 28) + "px");
-
-      }).on("mouseleave",function(d){
-          tooltip.transition()
-            .duration(200)
-            .style("opacity",0);
-      })
-
+        }).on("mouseleave",function(d){
+            tooltip.transition()
+              .duration(200)
+              .style("opacity",0);
+        })
+      }
     });
   }
 
