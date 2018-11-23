@@ -4,11 +4,6 @@ import * as d3_tile from 'd3-tile';
 
 import { GeoJsonService } from '../geo-json.service';
 
-export interface ZoomOption {
-  value: number;
-  name: string;
-}
-
 @Component({
   selector: 'app-page-map',
   templateUrl: './page-map.component.html',
@@ -24,24 +19,50 @@ export class PageMapComponent implements OnInit {
   tile;
   geo_feats = null;
 
-  zoom:number=60000;
+  zoom:number=40000;
+  countFilter:number=0;
+  roadFilter:string="All";
+  mapStyle:string='stamen';
   center=[-118.120931,34.018205];
 
-
   zoomOptions =[];
+  countOptions=[];
+  roadOptions=[];
+  styleOptions=[];
+
 
   constructor(private geojsonService : GeoJsonService) { }
 
   ngOnInit() {
-    this.renderMap();
-    this.zoomOptions=[
-      {name: 'low', value: 30000 },
-      {name: 'median', value: 40000 },
-      {name: 'high', value: 60000 },
-    ]
+    this.initOptions()
+    this.initMap();
   }
 
-  renderMap(){
+  initOptions(){
+    this.zoomOptions=[
+      {name: 'Low', value: 25000 },
+      {name: 'Median', value: 40000 },
+      {name: 'High', value: 60000 },
+    ];
+
+    this.countOptions=[
+      {name: '>100', value: 100 },
+      {name: '>50', value: 50 },
+      {name: '>0', value: 0 },
+    ];
+
+    this.roadOptions=[
+      {name: 'All', value: 'All' },
+      {name: 'I10', value: 'I10' },
+    ];
+
+    this.styleOptions=[
+      {name: 'stamen', value: 'stamen' },
+      {name: 'openStreetMap', value: 'openStreetMap' },
+    ];
+  }
+
+  initMap(){
     this.root_div = d3.select("#map-div");
     var c_width=this.root_div.node().getBoundingClientRect().width;
     var c_height=900;
@@ -73,10 +94,10 @@ export class PageMapComponent implements OnInit {
       .style("background","lightsteelblue");
 
     //var geofile_name= "./src/assets/dangerIntersection.geojson";
-    this.draw()
+    this.renderMap()
   }
 
-  draw(){
+  renderMap(){
     var tau = 2*Math.PI;
 
     // Render Tiles
@@ -88,7 +109,7 @@ export class PageMapComponent implements OnInit {
     this.canvas.selectAll("image")
       .data(tiles)
     .enter().append("image")
-      .attr("xlink:href", d=> this.getStamenMap(d.x, d.y, d.z) )
+      .attr("xlink:href", d=> this.getStamenTiles(d.x, d.y, d.z) )
       .attr("x", function(d) { return (d.x + tiles.translate[0]) * tiles.scale; })
       .attr("y", function(d) { return (d.y + tiles.translate[1]) * tiles.scale; })
       .attr("width", tiles.scale)
@@ -104,7 +125,7 @@ export class PageMapComponent implements OnInit {
         this.geo_feats=geo_feats;
 
         canvas.selectAll(".hazzard")
-          .data(geo_feats)
+          .data(geo_feats,d=>d.properties.name)
           .enter().append("circle")
           .classed("hazzard",true)
           .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
@@ -128,6 +149,45 @@ export class PageMapComponent implements OnInit {
         })
     });
   }
+  updateMap($event){
+    var tau = 2*Math.PI;
+    let tooltip = this.tooltip;
+    let canvas= this.canvas;
+    let projection = this.projection;
+
+    let hazzards=canvas.selectAll(".hazzard")
+      .data(this.geo_feats.filter(d=>this.filterHazzards(d)),
+        d=>d.properties.count)
+    //update
+    hazzards
+      .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
+      .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
+      .attr("r",d=>d.properties.count/10)
+      .style("fill","red")
+      .attr("opacity","0.5");
+    //append
+    hazzards.enter().append('circle')
+    .classed('hazzard', true)
+      .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
+      .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
+      .attr("r",d=>d.properties.count/10)
+      .style("fill","red")
+      .attr("opacity","0.5");
+    hazzards.exit().remove();
+  }
+
+  filterHazzards(data):boolean{
+    let roadName = data.properties.name.split('/')[0];
+    roadName = roadName.split(' ')[0];
+    let count = data.properties.count;
+    if((this.roadFilter=="All" ||  roadName==this.roadFilter)
+      && count>= this.countFilter){
+      return true;
+    }else{
+      return false;
+    }
+    
+  }
 
   rerenderMap($event){
     var tau = 2*Math.PI;
@@ -147,7 +207,7 @@ export class PageMapComponent implements OnInit {
     canvas.selectAll("image")
       .data(tiles)
     .enter().append("image")
-      .attr("xlink:href", d=> this.getStamenMap(d.x, d.y, d.z) )
+      .attr("xlink:href", d=> this.getTiles(d.x, d.y, d.z) )
       .attr("x", function(d) { return (d.x + tiles.translate[0]) * tiles.scale; })
       .attr("y", function(d) { return (d.y + tiles.translate[1]) * tiles.scale; })
       .attr("width", tiles.scale)
@@ -155,7 +215,7 @@ export class PageMapComponent implements OnInit {
 
     canvas.selectAll(".hazzard").remove();
     canvas.selectAll(".hazzard")
-      .data(this.geo_feats)
+      .data(this.geo_feats,d=>d.properties.name)
       .enter().append('circle')
     .classed('hazzard', true)
       .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
@@ -165,13 +225,21 @@ export class PageMapComponent implements OnInit {
       .attr("opacity","0.5");
   }
 
-  getStamenMap( x:number, y:number, z:number, style:string="terrain"): string{
+  getTiles(x:number, y:number, z:number){
+    if(this.mapStyle=="stamen"){
+      return this.getStamenTiles(x,y,z);
+    }else{
+      return this.getOpenTiles(x,y,z);
+    }
+  }
+
+  getStamenTiles( x:number, y:number, z:number, style:string="terrain"): string{
     // possible styles 1.Toner, 2.Terrain 3.watercolor
     var url:string ="http://" + "abc"[y % 3] + ".tile.stamen.com/"+style+"/" + z + "/" + x + "/" + y + ".png"; 
     return url;
   }
 
-  getOpenMap( x:number, y:number, z:number): string{
+  getOpenTiles( x:number, y:number, z:number): string{
     var url:string ="http://" + "abc"[y % 3] + ".tile.openstreetmap.org/" + z + "/" + x + "/" + y + ".png"; 
     return url;
   }

@@ -1,13 +1,39 @@
 <!--p>
   page-map works!
 </p-->
-<mat-form-field>
-  <mat-select placeholder="Zoom" [(value)]="zoom" (selectionChange)="updateMap($event)">
-    <mat-option *ngFor ="let zopt of zoomOptions" [value]='zopt.value'>
-      {{zopt.name}}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+<div class="selection-row">
+  <mat-form-field>
+    <mat-select placeholder="Zoom" [(value)]="zoom" (selectionChange)="rerenderMap($event)">
+      <mat-option *ngFor ="let zopt of zoomOptions" [value]='zopt.value'>
+        {{zopt.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-select placeholder="Count" [(value)]="countFilter" (selectionChange)="updateMap($event)">
+      <mat-option *ngFor ="let copt of countOptions" [value]='copt.value'>
+        {{copt.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  
+  <mat-form-field>
+    <mat-select placeholder="Road" [(value)]="roadFilter" (selectionChange)="updateMap($event)">
+      <mat-option *ngFor ="let ropt of roadOptions" [value]='ropt.value'>
+        {{ropt.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-select placeholder="Style" [(value)]="mapStyle" (selectionChange)="rerenderMap($event)">
+      <mat-option *ngFor ="let sopt of styleOptions" [value]='sopt.value'>
+        {{sopt.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
 
 <div id="map-div">
 </div>
