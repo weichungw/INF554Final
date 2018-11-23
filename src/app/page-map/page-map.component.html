@@ -1,5 +1,13 @@
 <!--p>
   page-map works!
 </p-->
+<mat-form-field>
+  <mat-select placeholder="Zoom" [(value)]="zoom" (selectionChange)="updateMap($event)">
+    <mat-option *ngFor ="let zopt of zoomOptions" [value]='zopt.value'>
+      {{zopt.name}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
 <div id="map-div">
 </div>

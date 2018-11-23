@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import * as d3 from 'd3';
 import * as d3_tile from 'd3-tile';
 
 import { GeoJsonService } from '../geo-json.service';
+
+export interface ZoomOption {
+  value: number;
+  name: string;
+}
 
 @Component({
   selector: 'app-page-map',
@@ -18,11 +21,24 @@ export class PageMapComponent implements OnInit {
   height;
   canvas;
   tooltip;
+  tile;
+  geo_feats = null;
+
+  zoom:number=60000;
+  center=[-118.120931,34.018205];
+
+
+  zoomOptions =[];
 
   constructor(private geojsonService : GeoJsonService) { }
 
   ngOnInit() {
     this.renderMap();
+    this.zoomOptions=[
+      {name: 'low', value: 30000 },
+      {name: 'median', value: 40000 },
+      {name: 'high', value: 60000 },
+    ]
   }
 
   renderMap(){
@@ -40,11 +56,10 @@ export class PageMapComponent implements OnInit {
       .attr("transform","translate("+margin.left+", "+margin.top+")");
 
     // projection config
-    var map_scale = 59672.941;
     var map_center=[-118.120931,34.018205];
     this.projection = d3.geoMercator()
-    this.projection.scale(map_scale)
-      .center(map_center);
+    this.projection.scale(this.zoom)
+      .center(this.center);
     //var geopath =d3.geoPath(this.projection)
     //  .pointRadius(3);
 
@@ -65,8 +80,8 @@ export class PageMapComponent implements OnInit {
     var tau = 2*Math.PI;
 
     // Render Tiles
-    var tile = d3_tile.tile();
-    var tiles =tile.size([this.width,this.height])
+    this.tile = d3_tile.tile();
+    var tiles =this.tile.size([this.width,this.height])
       .scale(this.projection.scale()*tau)
       .translate(this.projection([0,0]))();
 
@@ -84,9 +99,9 @@ export class PageMapComponent implements OnInit {
     let canvas= this.canvas;
     let projection = this.projection;
 
-    this.geojsonService.getGeoData().subscribe({
-      next(geodata){
+    this.geojsonService.getGeoData().subscribe(geodata=>{
         var geo_feats=geodata["features"];
+        this.geo_feats=geo_feats;
 
         canvas.selectAll(".hazzard")
           .data(geo_feats)
@@ -111,8 +126,43 @@ export class PageMapComponent implements OnInit {
               .duration(200)
               .style("opacity",0);
         })
-      }
     });
+  }
+
+  rerenderMap($event){
+    var tau = 2*Math.PI;
+    let tooltip = this.tooltip;
+    let canvas= this.canvas;
+    let projection = this.projection;
+
+    // update projection
+    projection.scale(this.zoom)
+      .center(this.center);
+    //update tiles
+    var tiles =this.tile.size([this.width,this.height])
+      .scale(projection.scale()*tau)
+      .translate(projection([0,0]))();
+    //render tiles
+    canvas.selectAll("image").remove();
+    canvas.selectAll("image")
+      .data(tiles)
+    .enter().append("image")
+      .attr("xlink:href", d=> this.getStamenMap(d.x, d.y, d.z) )
+      .attr("x", function(d) { return (d.x + tiles.translate[0]) * tiles.scale; })
+      .attr("y", function(d) { return (d.y + tiles.translate[1]) * tiles.scale; })
+      .attr("width", tiles.scale)
+      .attr("height", tiles.scale);
+
+    canvas.selectAll(".hazzard").remove();
+    canvas.selectAll(".hazzard")
+      .data(this.geo_feats)
+      .enter().append('circle')
+    .classed('hazzard', true)
+      .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
+      .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
+      .attr("r",d=>d.properties.count/10)
+      .style("fill","red")
+      .attr("opacity","0.5");
   }
 
   getStamenMap( x:number, y:number, z:number, style:string="terrain"): string{
