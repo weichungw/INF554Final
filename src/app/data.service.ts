@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
-export class GeoJsonService {
+export class DataService {
 
   constructor(private http: HttpClient) { }
 

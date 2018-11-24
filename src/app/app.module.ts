@@ -14,6 +14,7 @@ import { PageMapComponent } from './page-map/page-map.component';
 import { InjuredLevelComponent } from './injured-level/injured-level.component';
 import { HitNRunComponent } from './hit-n-run/hit-n-run.component';
 import { MembersComponent } from './members/members.component';
+import { DailyRiskComponent } from './daily-risk/daily-risk.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { MembersComponent } from './members/members.component';
     InjuredLevelComponent,
     HitNRunComponent,
     HomeComponent,
-    MembersComponent
+    MembersComponent,
+    DailyRiskComponent
   ],
   imports: [
     BrowserModule,

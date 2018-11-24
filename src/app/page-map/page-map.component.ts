@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import * as d3_tile from 'd3-tile';
 
-import { GeoJsonService } from '../geo-json.service';
+import { DataService } from '../data.service';
+import { OPTIONS } from './map-options';
 
 @Component({
   selector: 'app-page-map',
@@ -31,38 +32,22 @@ export class PageMapComponent implements OnInit {
   styleOptions=[];
 
 
-  constructor(private geojsonService : GeoJsonService) { }
+  constructor(private dataService : DataService) { }
 
   ngOnInit() {
-    this.initOptions()
+    this.initOptions();
     this.initMap();
   }
 
   initOptions(){
-    this.zoomOptions=[
-      {name: 'Low', value: 25000 },
-      {name: 'Median', value: 40000 },
-      {name: 'High', value: 60000 },
-    ];
-
-    this.countOptions=[
-      {name: '>100', value: 100 },
-      {name: '>50', value: 50 },
-      {name: '>0', value: 0 },
-    ];
-
-    this.roadOptions=[
-      {name: 'All', value: 'All' },
-      {name: 'I10', value: 'I10' },
-    ];
-
-    this.styleOptions=[
-      {name: 'stamen', value: 'stamen' },
-      {name: 'openStreetMap', value: 'openStreetMap' },
-    ];
+    this.zoomOptions  =OPTIONS.zoomOptions;
+    this.countOptions =OPTIONS.countOptions;
+    this.roadOptions  =OPTIONS.roadOptions;
+    this.styleOptions =OPTIONS.styleOptions;
   }
 
   initMap(){
+    // margin convention
     this.root_div = d3.select("#map-div");
     var c_width=this.root_div.node().getBoundingClientRect().width;
     var c_height=900;
@@ -120,7 +105,7 @@ export class PageMapComponent implements OnInit {
     let canvas= this.canvas;
     let projection = this.projection;
 
-    this.geojsonService.getGeoData().subscribe(geodata=>{
+    this.dataService.getGeoData().subscribe(geodata=>{
         var geo_feats=geodata["features"];
         this.geo_feats=geo_feats;
 
@@ -132,7 +117,7 @@ export class PageMapComponent implements OnInit {
           .attr('name',d=>d.properties.name)
           .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
           .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
-          .attr("r",d=>d.properties.count/10)
+        .attr("r",d=>Math.sqrt(d.properties.count/5))
           .style("fill","red")
           .style("opacity","0.5");
         this.registerToolTip();
@@ -160,7 +145,7 @@ export class PageMapComponent implements OnInit {
       .attr('name',d=>d.properties.name)
       .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
       .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
-      .attr("r",d=>d.properties.count/10)
+      .attr("r",d=>Math.sqrt(d.properties.count/10))
       .style("fill","red")
       .style("opacity",0.0);
     
@@ -220,7 +205,7 @@ export class PageMapComponent implements OnInit {
     .classed('hazzard', true)
       .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
       .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
-      .attr("r",d=>d.properties.count/10)
+      .attr("r",d=>Math.sqrt(d.properties.count/10))
       .style("fill","red")
       .attr("opacity","0.5");
       this.registerToolTip();
