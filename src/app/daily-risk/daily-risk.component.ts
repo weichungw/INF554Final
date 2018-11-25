@@ -205,6 +205,100 @@ export class DailyRiskComponent implements OnInit {
 
     })
   }
+  reRenderChart(){
+    let dataset=this.raw_dataset.filter(d=>d.category==this.category);
+    let highways = dataset.map(d=>d.name);
+    let max_count = this.getMaxCount(dataset);
+
+    var x_scale= d3.scalePoint<string>()
+      .domain(this.hours)
+      .rangeRound([0,this.border.width])
+      .padding(0.1);
+    var y_scale= d3.scaleLinear()
+      .domain([0,max_count])
+      .rangeRound([this.border.height,0]);
+
+    var legend_y_scale = d3.scalePoint()
+      .domain(dataset.map(d=>d.name))
+      .rangeRound([30,this.border.height-30])
+    var color_scale = d3.scaleOrdinal(d3.schemeCategory10)
+      .domain(highways);
+
+    this.line_generator = d3.line()
+    //.curve(d3.curveBasis)
+      .x(d=>x_scale(d["hour"]))
+      .y(d=>y_scale(d["count"]));
+
+    this.main_g.selectAll(".freeway-path").remove();
+    var lines=this.main_g.selectAll(".freeway-path") 
+      .data(dataset).enter()
+      .append('g')
+      .attr("class",d=>(d["name"]+"-path"))
+      .classed("freeway-path",true)
+      .style("stroke",c=>color_scale(c["name"]))
+      .style("stroke-width","2px")
+      .style("fill","none")
+      .attr("opacity",1)
+
+    lines.append("path")
+      .attr("d",data=>this.line_generator(data["counts"]))
+    .on("mouseover",function(d){
+      d3.select(this).transition().duration(200)
+        .style("stroke-width","5px")
+    }).on("mouseleave",function(d){
+      d3.select(this).transition().duration(200)
+        .style("stroke-width","2px")
+    });
+
+    lines.selectAll('circle')
+      .data(d=>d["counts"]).enter()
+      .append('circle')
+      .attr('cx',(d)=>x_scale(d["hour"]))
+      .attr('cy',(d)=>y_scale(d["count"]))
+      .attr('r',"3px");
+
+    this.side_g.selectAll(".freeway-legend").remove();
+    var legends= this.side_g.selectAll(".freeway-legend")
+      .data(dataset).enter().append('g')
+      .attr("class",d=>{return d["name"]+"-legend"} )
+      .classed("freeway-legend", true)
+      .attr("transform", d=> { return "translate(0,"+legend_y_scale(d["name"])+")" });
+
+    legends.append('circle')
+      .attr('position',"relative")
+      .style('fill',d=>color_scale(d["name"]) )
+      .style('stroke',d=>color_scale(d["name"]))
+      .attr('r',5)
+      .on("mouseover", function(d){
+        d3.select("."+d["name"]+"-path").transition().duration(200)
+          .style("stroke-width","5px");
+      })
+      .on("mouseleave", function(d){
+        d3.select("."+d["name"]+"-path").transition().duration(100)
+          .style("stroke-width","2px");
+      })
+      .on("click", function(d){
+        var line = d3.select("."+ d["name"] +"-path");
+        var circle = d3.select(this);
+        var state = line.attr("opacity");
+
+        circle.transition()
+          .duration(100)
+          .style("fill", state=="1"?"white":color_scale(d["name"]));
+
+        line.transition()
+          .duration(200)
+          .attr("opacity", state=="1"?0:1);
+      });
+
+      legends.append('text')
+        .text(d=>d["name"])
+        .attr('text-anchor','start')
+        .attr('alignment-baseline','middle')
+        .style("fill","white")
+        .attr('dx',8);
+
+  }
   
   @HostListener('window:resize', ['$event'])
   onResize(event?){
@@ -229,7 +323,6 @@ export class DailyRiskComponent implements OnInit {
       .attr("transform", "translate("+(this.margin.left + this.border.width + this.border.m_s_padding)+", "+this.margin.top+")");
 
     let dataset=this.raw_dataset.filter(d=>d.category==this.category);
-    let highways = dataset.map(d=>d.name);
     let max_count = this.getMaxCount(dataset);
 
     var x_scale= d3.scalePoint<string>()
@@ -242,8 +335,6 @@ export class DailyRiskComponent implements OnInit {
     var legend_y_scale = d3.scalePoint()
       .domain(dataset.map(d=>d.name))
       .rangeRound([30,this.border.height-30])
-    var color_scale = d3.scaleOrdinal(d3.schemeCategory10)
-      .domain(highways);
 
     
 
