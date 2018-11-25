@@ -1,0 +1,118 @@
+{
+    "name": "All",
+    "count": 184764,
+    "children": [
+        {
+            "name": "Human",
+            "ratio": 0.941,
+            "count": 173943,
+            "children": [
+                {
+                    "name": "Collision",
+                    "ratio": 0.976,
+                    "count": 169706,
+                    "children": [
+                        {
+                            "name": "Hit",
+                            "ratio": 0.845,
+                            "count": 143443,
+                            "children": [
+                                {
+                                    "name": "No-InJured",
+                                    "ratio": 0.463,
+                                    "count": 66383
+                                },
+                                {
+                                    "name": "Unknow",
+                                    "ratio": 0.337,
+                                    "count": 48332
+                                },
+                                {
+                                    "name": "Minor-Injured",
+                                    "ratio": 0.199,
+                                    "count": 28536
+                                },
+                                {
+                                    "name": "Major-Injured",
+                                    "ratio": 0.0,
+                                    "count": 43
+                                },
+                                {
+                                    "name": "Fatality",
+                                    "ratio": 0.001,
+                                    "count": 149
+                                }
+                            ]
+                        },
+                        {
+                            "name": "HitnRun",
+                            "ratio": 0.155,
+                            "count": 26263,
+                            "children": [
+                                {
+                                    "name": "No-Injured",
+                                    "ratio": 0.946,
+                                    "count": 24841
+                                },
+                                {
+                                    "name": "Injured",
+                                    "ratio": 0.054,
+                                    "count": 1422
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Others",
+                    "ratio": 0.024,
+                    "count": 4237,
+                    "children": [
+                        {
+                            "name": "Wrong-Way-Driver",
+                            "ratio": 0.342,
+                            "count": 1448
+                        },
+                        {
+                            "name": "Object-Flying-From-Vehicle",
+                            "ratio": 0.339,
+                            "count": 1435
+                        },
+                        {
+                            "name": "Defective-Signal",
+                            "ratio": 0.32,
+                            "count": 1354
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Nature",
+            "ratio": 0.059,
+            "count": 10821,
+            "children": [
+                {
+                    "name": "Road-Kill",
+                    "ratio": 0.225,
+                    "count": 2434
+                },
+                {
+                    "name": "Fire",
+                    "ratio": 0.685,
+                    "count": 7417
+                },
+                {
+                    "name": "Flood",
+                    "ratio": 0.073,
+                    "count": 791
+                },
+                {
+                    "name": "Wind",
+                    "ratio": 0.017,
+                    "count": 179
+                }
+            ]
+        }
+    ]
+}

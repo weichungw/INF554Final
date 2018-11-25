@@ -107,6 +107,44 @@ class Preprocessor:
         #        leveled_highways["IntraState"].append(highway)
         return highways
 
+    def getDangerRatio(self):
+        Hit ={"name":"Hit","children":[{"name":"No-InJured","count":66383},
+                {"name":"Unknow","count":48332},
+                {"name":"Minor-Injured","count":28272+264},
+                {"name":"Fatality","count":149}]}
+        HitnRun={"name":"HitnRun","children":[{"name":"No-Injured","count":24841},
+                {"name":"Injured","count":1422}]}
+        Collision={"name":"Collision","children":[Hit,HitnRun]}
+        Others={"name":"Others","children":[
+            {"name":"Wrong-Way-Driver", "count":1448},
+            {"name":"Object-Flying-From-Vehicle","count":1435},
+            {"name":"Defective-Signal","count":1354}]}
+        Human={"name":"Human","children":[Collision,Others]}
+        Nature={"name":"Nature","children":[
+            {"name":"Road-Kill","count":2434},
+            {"name":"Fire","count":7417},
+            {"name":"Flood","count":791},
+            {"name":"Wind","count":179}]}
+        All={"name":"All","children":[Human,Nature]}
+        self.updateRatio(Hit)
+        self.updateRatio(HitnRun)
+        self.updateRatio(Collision)
+        self.updateRatio(Others)
+        self.updateRatio(Human)
+        self.updateRatio(Nature)
+        self.updateRatio(All)
+        return All
+
+    def updateRatio(self,data):
+        count =0
+        for child in data["children"]:
+            count+=child["count"]
+        data["count"]=count
+        for child in data["children"]:
+            child["ratio"]=round(child["count"]/count,3)
+
+        
+
 
     def getCollisionTypes(self):
         return self.collision_types
@@ -121,12 +159,18 @@ if __name__ == "__main__":
     collision_type = prep.getCollisionTypes()
     dataset = prep.readfile(rfile_name)
 
-    # ---Get Freeway Names
-    wfile_name = "dayPattern.json"
-    dayPattern= prep.getDayPattern()
+    #Dangers Ratio
+    wfile_name = "dangerRatio.json"
+    ratio=prep.getDangerRatio()
     with open(wfile_name, 'w') as wfile:
-        json.dump(dayPattern,wfile)
+        json.dump(ratio,wfile, indent=4)
 
+
+    # ---Get Freeway Names
+    #wfile_name = "dayPattern.json"
+    #dayPattern= prep.getDayPattern()
+    #with open(wfile_name, 'w') as wfile:
+    #    json.dump(dayPattern,wfile)
 
 
     # ---Get Geo-Counts---

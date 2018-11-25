@@ -205,7 +205,7 @@ export class DailyRiskComponent implements OnInit {
 
     })
   }
-  reRenderChart(){
+  reRenderChart($event){
     let dataset=this.raw_dataset.filter(d=>d.category==this.category);
     let highways = dataset.map(d=>d.name);
     let max_count = this.getMaxCount(dataset);
