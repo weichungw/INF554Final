@@ -123,6 +123,7 @@ export class PageMapComponent implements OnInit {
         this.registerToolTip();
     });
   }
+
   updateMap($event){
     var tau = 2*Math.PI;
     let tooltip = this.tooltip;

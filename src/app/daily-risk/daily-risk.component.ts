@@ -3,6 +3,9 @@ import * as d3 from 'd3';
 
 import { DataService } from '../data.service';
 
+export interface HighwayLine {name:string, counts: HourData[]}
+export interface HourData {hour:string, count: number}
+
 @Component({
   selector: 'app-daily-risk',
   templateUrl: './daily-risk.component.html',
@@ -10,9 +13,15 @@ import { DataService } from '../data.service';
 })
 export class DailyRiskComponent implements OnInit {
   root_div;
-  width;
-  height;
+  margin;
+  border;
   canvas;
+  main_g;
+  side_g;
+  tooltip;
+  dataset:HighwayLine[];
+  line_generator;
+  color_scale;
 
 
   constructor(private dataService : DataService) { }
@@ -26,15 +35,164 @@ export class DailyRiskComponent implements OnInit {
     this.root_div = d3.select("#daily-risk-div");
     var c_width = this.root_div.node().getBoundingClientRect().width;
     var c_height=900;
-    var svg = this.root_div.append("svg")
+    this.canvas = this.root_div.append("svg")
       .attr("width",c_width)
       .attr("height",c_height);
-    var margin = {top:50, right:20,bottom:20, left:20};
-    this.width = c_width - margin.left - margin.right;
-    this.height = c_height -margin.top -margin.bottom;
 
-    this.canvas= svg.append('g')
-      .attr("transform","translate("+margin.left+", "+margin.top+")");
+
+    // set border
+    var margin = {top:50, right:20,bottom:20, left:60};
+    this.margin = margin;
+    this.border = {
+      width    : (c_width - margin.left - margin.right)*0.75,
+      height   : c_height - margin.top - margin.bottom,
+      m_s_padding : (c_width - margin.left - margin.right)*0.05,
+      s_width  : (c_width - margin.left - margin.right)*0.2,
+      s_height : c_height - margin.top - margin.bottom
+    };
+
+
+    this.main_g= this.canvas.append("g")
+      .attr("class","main-group")
+      .attr("transform", "translate("+ margin.left+", "+margin.top+")")
+
+    this.side_g= this.canvas.append("g")
+      .attr("class","side-group")
+      .attr("transform", "translate(" + 
+        (margin.left + this.border.width + this.border.m_s_padding)+
+        ", "+ margin.top + ")")
+
+    this.tooltip = this.root_div.append("div")
+      .attr("id","tooltip-risk")
+      .style("opacity","0")
+      .style("position","absolute")
+      .style("text-align","center")
+      .style("padding","2px")
+      .style("border-radius","8px")
+      .style("background","lightsteelblue");
+
+    this.renderChart();
+  }
+
+  renderChart(){
+    d3.json("./mock-data/dayPattern.json").then((dataset: HighwayLine[])=>{
+      this.dataset=dataset;
+      let hour = dataset[0]["counts"].map(d=>d["hour"]);
+      let highways = dataset.map(d=>d.name)
+      let max_count = dataset.reduce(
+        (mcount,line)=>{
+          let peak = line["counts"].reduce(
+            (m,d)=>Math.max(m,d["count"]),0);
+          return Math.max(mcount,peak);
+        },0);
+
+      var x_scale= d3.scalePoint<string>()
+        .domain(hour)
+        .rangeRound([0,this.border.width])
+        .padding(0.1);
+      var y_scale= d3.scaleLinear()
+        .domain([0,max_count])
+        .rangeRound([this.border.height,0]);
+      var legend_y_scale = d3.scalePoint()
+        .domain(dataset.map(d=>d.name))
+        .rangeRound([0,this.border.height])
+
+      var color_scale = d3.scaleOrdinal(d3.schemeCategory10)
+        .domain(highways);
+      this.color_scale= color_scale;
+
+      this.main_g.append('g')
+          .attr('class',"axis axis--x")
+          .attr("transform", "translate(0,"+this.border.height+")")
+          .call(d3.axisBottom(x_scale));
+
+      this.main_g.append('g')
+          .attr('class',"axis axis--y")
+          .call(d3.axisLeft(y_scale).ticks(10));
+
+
+      //y-axes  title
+      this.canvas.append("text")
+        .attr('class',"y-label")
+        .attr("transform","rotate(-90)" )
+        .attr("y",0+ (this.margin.left/3))
+        .attr("x",0-(this.border.height/2))
+        .attr("text-anchor","middle")
+        .text("HDI");
+
+      this.line_generator = d3.line()
+      //.curve(d3.curveBasis)
+        .x(d=>x_scale(d["hour"]))
+        .y(d=>y_scale(d["count"]));
+
+      var lines=this.main_g.selectAll(".freeway-path") 
+        .data(dataset).enter()
+        .append('g')
+        .attr("class",d=>(d["name"]+"-path"))
+        .classed("freeway-path",true)
+        .style("stroke",c=>this.color_scale(c["name"]))
+        .style("stroke-width","2px")
+        .style("fill","none")
+        .attr("opacity",1)
+
+      lines.append("path")
+        .attr("d",data=>this.line_generator(data["counts"]))
+      .on("mouseover",function(d){
+        d3.select(this).transition().duration(200)
+          .style("stroke-width","5px")
+      }).on("mouseleave",function(d){
+        d3.select(this).transition().duration(200)
+          .style("stroke-width","2px")
+      });
+
+      lines.selectAll('circle')
+        .data(d=>d["counts"]).enter()
+        .append('circle')
+        .attr('cx',(d)=>x_scale(d["hour"]))
+        .attr('cy',(d)=>y_scale(d["count"]))
+        .attr('r',"3px");
+      
+      var legends= this.side_g.selectAll(".freeway-legend")
+        .data(dataset).enter().append('g')
+        .attr("class",d=>{return d["name"]+"-legend"} )
+        .classed("freeway-legend", true)
+        .attr("transform", d=> { return "translate(0,"+legend_y_scale(d["name"])+")" });
+
+      legends.append('circle')
+        .attr('position',"relative")
+        .style('fill',d=>this.color_scale(d["name"]) )
+        .style('stroke',d=>this.color_scale(d["name"]))
+        .attr('r',5)
+        .on("mouseover", function(d){
+          d3.select("."+d["name"]+"-path").transition().duration(200)
+            .style("stroke-width","5px");
+        })
+        .on("mouseleave", function(d){
+          d3.select("."+d["name"]+"-path").transition().duration(100)
+            .style("stroke-width","2px");
+        })
+        .on("click", function(d){
+          var line = d3.select("."+ d["name"] +"-path");
+          var circle = d3.select(this);
+          var state = line.attr("opacity");
+
+          circle.transition()
+            .duration(100)
+            .style("fill", state=="1"?"white":color_scale(d["name"]));
+
+          line.transition()
+            .duration(200)
+            .attr("opacity", state=="1"?0:1);
+        });
+
+        legends.append('text')
+          .text(d=>d["name"])
+          .attr('text-anchor','start')
+          .attr('alignment-baseline','middle')
+          .attr('dx',8);
+
+    })
+
   }
 
 }
