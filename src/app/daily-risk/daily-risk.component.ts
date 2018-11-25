@@ -205,6 +205,7 @@ export class DailyRiskComponent implements OnInit {
 
     })
   }
+
   reRenderChart($event){
     let dataset=this.raw_dataset.filter(d=>d.category==this.category);
     let highways = dataset.map(d=>d.name);

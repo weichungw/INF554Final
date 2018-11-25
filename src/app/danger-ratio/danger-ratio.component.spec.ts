@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { InjuredLevelComponent } from './injured-level.component';
+import { DangerRatioComponent } from './danger-ratio.component';
 
-describe('InjuredLevelComponent', () => {
-  let component: InjuredLevelComponent;
-  let fixture: ComponentFixture<InjuredLevelComponent>;
+describe('DangerRatioComponent', () => {
+  let component: DangerRatioComponent;
+  let fixture: ComponentFixture<DangerRatioComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ InjuredLevelComponent ]
+      declarations: [ DangerRatioComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(InjuredLevelComponent);
+    fixture = TestBed.createComponent(DangerRatioComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
