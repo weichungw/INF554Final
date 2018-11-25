@@ -94,8 +94,17 @@ class Preprocessor:
                 if street.find(highway)>=0:
                     highways[highway][row['time'].hour]+=1
         # transform to d3 format (array)
-        highways = [{"name":name[:-1], "counts":[ {"hour": ('%02d'%i), 'count':c} 
-            for i, c in enumerate(counts) ]} for name, counts in highways.items() ]
+        highways = [ {"name":name[:-1],
+                    "category": ("I" if name[0]=="I" else "S"),
+                    "counts":[ {"hour": ('%02d'%(i+1)), 'count':c} for i, c in enumerate(counts[1:]) ]
+                    } for name, counts in highways.items() ]
+
+        #leveled_highways={"InterState":[],"IntraState":[]}
+        #for highway in highways:
+        #    if highway["name"][0]== 'I':
+        #        leveled_highways["InterState"].append(highway)
+        #    else:
+        #        leveled_highways["IntraState"].append(highway)
         return highways
 
 

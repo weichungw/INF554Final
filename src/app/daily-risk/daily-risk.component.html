@@ -1,4 +1,11 @@
-<p>
-  daily-risk works!
-</p>
+<div class="selection-row">
+  <mat-form-field>
+    <mat-select placeholder="Category" [(value)]="category" (selectionChange)="reRenderChart($event)">
+      <mat-option *ngFor ="let copt of categoryOptions" [value]='copt.value'>
+        {{copt.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+</div>
 <div id="daily-risk-div"></div>
