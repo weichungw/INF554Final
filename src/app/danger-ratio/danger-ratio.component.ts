@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 
 export interface LeafNode {data:DangerBubble ,x:number, y:number}
 export interface DangerBubble{count:number, name: String, ratio:number}
+export interface DangerPie{count:number, name:string, ratio:number}
 @Component({
   selector: 'app-danger-ratio',
   templateUrl: './danger-ratio.component.html',
@@ -14,10 +15,67 @@ export class DangerRatioComponent implements OnInit {
 
   ngOnInit() {
     this.initHierarchy();
+    this.initRatio();
+  }
+  initRatio(){
+    var div =d3.select("#danger-ratio-div");
+    var c_width:number = 600;
+    var c_height:number =600;
+
+    var canvas = div.append('svg')
+      .attr("width", c_width)
+      .attr('height',c_height);
+
+    var margin= {top:20, right:20, bottom:20, left:20};
+    var width: number= c_width - margin.left - margin.right;
+    var height: number= c_height -margin.top - margin.bottom;
+  
+    var arc_generator = d3.arc()
+      .innerRadius(0)
+      .outerRadius(Math.min(width,height)/2 * 0.9);
+
+    var arc_label = d3.arc()
+      .innerRadius(Math.min(width,height)/2 * 0.6)
+      .outerRadius(Math.min(width,height)/2 * 0.8);
+
+    var  g= canvas.append("g")
+      .attr("transform", "translate("+ (width/2) + ", " + (height/2) + ")" );
+
+    d3.json("./mock-data/dangerRatio2.json").then((dataset:DangerPie[])=>{
+      var color_scale =  d3.scaleOrdinal(d3.schemeDark2)
+        .domain(dataset.map((d)=>d["name"]));
+
+      var arcs = d3.pie<DangerPie>()
+        .value((d:DangerPie)=>d["count"])(dataset);
+
+      var pizzas=g.selectAll('.pizza')
+        .data(arcs)
+        .enter().append("path")
+        .attr("class",(d)=>{return 'pizza '+ d.data["name"]+"-pizza"})
+        .attr("stroke","white")
+        .attr("d",<any>arc_generator)
+        .style("fill",(d)=>color_scale(d.data["name"]))
+        .attr("opacity",0.7)
+
+      pizzas.append("title")
+        .text((d)=>{return d.data["name"]+" : "+ d.data["ratio"].toFixed(3);})
+
+      g.selectAll(".pie-label")
+        .data(arcs)
+        .enter().append("text")
+        .attr("class","pie-label")
+        .attr("text-anchor","middle")
+        .attr("alignment-baseline","middle")
+        .attr("transform", function(d:any){ return "translate("+arc_label.centroid(d)+")";})
+        .text((d)=>{return d.data["name"]+" : "+ d.data["ratio"].toFixed(3);})
+
+    })
+
   }
 
+
   initHierarchy(){
-    var div = d3.select("#danger-ratio-div");
+    var div = d3.select("#danger-control-div");
     var c_width:number = 800;
     var c_height:number = 800;
     var canvas = div.append("svg")
