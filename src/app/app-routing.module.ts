@@ -8,6 +8,7 @@ import { DangerRatioComponent } from './danger-ratio/danger-ratio.component';
 import { MembersComponent } from './members/members.component';
 
 const routes: Routes = [
+  { path: '', redirectTo:'home', pathMatch:'full' },
   { path: 'home', component: HomeComponent },
   { path: 'page-map', component: PageMapComponent },
   { path: 'daily-risk', component: DailyRiskComponent },

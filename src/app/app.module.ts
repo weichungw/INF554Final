@@ -14,6 +14,7 @@ import { PageMapComponent } from './page-map/page-map.component';
 import { DailyRiskComponent } from './daily-risk/daily-risk.component';
 import { DangerRatioComponent } from './danger-ratio/danger-ratio.component';
 import { MembersComponent } from './members/members.component';
+import { WelcomeComponent } from './welcome/welcome.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { MembersComponent } from './members/members.component';
     PageMapComponent,
     DailyRiskComponent,
     DangerRatioComponent,
-    MembersComponent
+    MembersComponent,
+    WelcomeComponent
   ],
   imports: [
     BrowserModule,
