@@ -11,20 +11,18 @@ import { MaterialModule } from './material';
 // My components
 import { HomeComponent } from './home/home.component';
 import { PageMapComponent } from './page-map/page-map.component';
-import { HitNRunComponent } from './hit-n-run/hit-n-run.component';
-import { MembersComponent } from './members/members.component';
 import { DailyRiskComponent } from './daily-risk/daily-risk.component';
 import { DangerRatioComponent } from './danger-ratio/danger-ratio.component';
+import { MembersComponent } from './members/members.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PageMapComponent,
-    HitNRunComponent,
     HomeComponent,
-    MembersComponent,
+    PageMapComponent,
     DailyRiskComponent,
-    DangerRatioComponent
+    DangerRatioComponent,
+    MembersComponent
   ],
   imports: [
     BrowserModule,
