@@ -26,9 +26,9 @@
 <a name="slide1"></a>
 ## Slide 1
 ### Introduction
-1. Title: Statistics Visualization of Traffic Data in LA 
+1. Project title: Los Angeles Accident Analysis and Highway Safety
 2. Group: datum 
-3. Members: Lu Zhang, Wei-Chung Wang, Ruolei Xia
+3. Team names: Wei-Chung Wang (weichunw), Roulei Xia(), Lu Zhung()
 
 <a name="slide2"></a>
 ## Slide 2
