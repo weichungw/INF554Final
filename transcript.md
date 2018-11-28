@@ -28,7 +28,7 @@
 ### Introduction
 1. Project title: Los Angeles Accident Analysis and Highway Safety
 2. Group: datum 
-3. Team names: Wei-Chung Wang (weichunw), Roulei Xia(), Lu Zhung()
+3. Team names: Wei-Chung Wang (weichunw), Roulei Xia(zhan634), Lu Zhung(rouleixi)
 
 <a name="slide2"></a>
 ## Slide 2
@@ -37,14 +37,6 @@
 2. Have you ever observe LA's daily macro behavior.
 3. Traffic volume could inform us the activity level of each part in LA.
 
-<a name="slide3"></a>
-## Slide 3
-### Value of project
-1. We could optimize our personal behavior corresponding to it.
-Either benifit to ourself or to the whole society.
-    1. During heavy traffic, Google direction could be inaccurate.
-    2. All we need is to avoid those red cloud on the map.
-2. The authority could drafts plans to tackle heavy traffic.
 
 <a name="slide4"></a>
 ## Slide 4
@@ -90,27 +82,7 @@ Different time and granularity, different map contents. Users can zoom in, zoom 
 <a name="slide8"></a>
 ## Slide 8
 ### Design Consideration
-1. Numerical
-	1. Speed
-	2. Traffic Flow
-	3. Time
-	4. Latitude & Longitude
-2. Categorical
-	1. Road
-	2. Direction
 
-Our visualization is high dimensional. Specific dimensions list above.
-
-<a name="slide9"></a>
-## Slide 9
-### Creative Point
-1. Map
-	1. Dynamic
-	2. Interactive 
-2. Charts
-	1. Information 
-	2. Story 
-	3. Stucture
 
 <a name="slide10"></a>
 ## Slide 10
@@ -138,33 +110,81 @@ Our visualization is high dimensional. Specific dimensions list above.
 4. more complicated charts 
 5. combine all charts in frontend 
 6. extra statistics and analysis 
+
 <a name="slide13"></a>
 ## Slide 13
-### Plan to evaluate 
-1. use the visualisation wheel 
-2. test how good for users to interact 
-3. UI experience 
-4. audience aspect to understand the information of data visualisation 
-5. risks: loading data is slow 
-6. lag when zoom in/out 
-
+### Value of project
+1. We could optimize our personal behavior corresponding to it.
+Either benifit to ourself or to the whole society.
+    1. During heavy traffic, Google direction could be inaccurate.
+    2. All we need is to avoid those red cloud on the map.
+2. The authority could drafts plans to tackle heavy traffic.
 
 <a name="slide14"></a>
-## Slide 14
-### Timeline 
-1. Previous research 
-2. paper prototype, backend, UI Design 
-3. Deployed prototype with basic Charts Map 
-4. Dynamic Combine Backend  Frontend 
-5. Interactive Control,Polish UI ,Paper,Video
-6. Final Webpage and report 
+## Slide 14 
+### Creative Point
+1. Map
+	1. Dynamic
+	2. Interactive 
+2. Charts
+	1. Information 
+	2. Story 
+	3. Stucture
 
 <a name="slide15"></a>
 ## Slide 15
-### Team Work
+### Contribution 
 1. Schedule: We have a specific schedule and teammates try to catch up 
 2. Available Data: out data is from the Lab, which is more reliable 
 3. Contribution of the whole team 
  Wang:  Prepare the data, and know about the data very well
  Lu: Write the JS, UI 
  Ruolei:  Html and JS 
+
+<a name="slide16"></a>
+## Slide 16
+### Design Process
+1. Data Processing and management
+2. Data Analysis and Testing
+3. geo-information anaylsis and Testing
+4. Map and chart rendering using other Declarative language(matplotlib/ggplot)
+5. Map and chart rendering using d3.
+6. Styling map and charts
+7. Styling the web-app
+
+<a name="slide17"></a>
+## Slide 17
+### D3 features
+1. Interactive design
+2. Reponsive design
+3. d3-tile for road and terrain rendering
+4. d3 layout for hierarchy design
+
+<a name="slide18"></a>
+## Slide 18
+### Tools
+1. Angular2
+2. Bootstrap
+3. D3
+4. stamen open map server
+5. Angular material
+
+<a name="slide19"></a>
+## Slide 19
+### Related and Future work
+1. Static journal[http://visionzero.lacity.org/tag/collision-analysis/]
+2. Static journal 2[http://graphics.latimes.com/la-pedestrians-how-we-did-it/]
+
+1. A scalable web app with robust backend
+2. Work our visualization with routing suggestion system.
+3. Collision prediction based on historical data
+
+<a name="slide20"></a>
+## Slide 20 
+### 
+1. Static journal[http://visionzero.lacity.org/tag/collision-analysis/]
+2. Static journal 2[http://graphics.latimes.com/la-pedestrians-how-we-did-it/]
+
+1. A scalable web app with robust backend
+2. Work our visualization with routing suggestion system.
+3. Collision prediction based on historical data

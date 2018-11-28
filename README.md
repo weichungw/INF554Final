@@ -10,7 +10,7 @@ Traffic Safety is always a highly concerned Topic in Los Angeles.
 - Team names: Wei-Chung Wang (weichunw)
 
 ### PROJECT ARTIFACTS
-- Demonstration [http://www-scf.usc.edu/~weichunw/final/]
+- Demonstration [http://www-scf.usc.edu/~weichunw/final3/]
 - Presentation [https://github.com/INF554Fall18/project-datum/blob/master/INF554_pre_final.pdf]
 - transcript [https://github.com/INF554Fall18/project-datum/blob/master/transcript.md]
 - Report []
