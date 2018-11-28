@@ -244,7 +244,7 @@ export class DailyRiskComponent implements OnInit {
             d3.selectAll(".tooltips").style('opacity', 0);
             d3.select("#guide_line_button").transition()
               .duration(100)
-              .style("opacity", myBoolean==true?"1":"0.8");
+              .style("opacity", myBoolean==true?"1":"0.5");
           });
 
         var guide_line = this.main_g.append("g")
@@ -425,7 +425,7 @@ export class DailyRiskComponent implements OnInit {
         d3.selectAll(".tooltips").style('opacity', 0);
         d3.select("#guide_line_button").transition()
           .duration(100)
-          .style("opacity", myBoolean==true?"1":"0.8");
+          .style("opacity", myBoolean==true?"1":"0.5");
       });
 
     var guide_line = this.main_g.append("g")
@@ -590,7 +590,7 @@ export class DailyRiskComponent implements OnInit {
           d3.selectAll(".tooltips").style('opacity', 0);
           d3.select("#guide_line_button").transition()
             .duration(100)
-            .style("opacity", myBoolean==true?"1":"0.8");
+            .style("opacity", myBoolean==true?"1":"0.5");
         });
 
       var guide_line = this.main_g.append("g")
