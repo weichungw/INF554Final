@@ -213,7 +213,7 @@ export class DailyRiskComponent implements OnInit {
           .attr('y',(d)=>y_scale(d["count"]))
           .attr('class', "tooltips")
           .attr('id', (d)=>("tooltip-"+ d["hour"]))
-          .text(d=>(console.log(d),d["count"]))
+          .text(d=>(d["count"]))
           .style('opacity', 0);
         
         // guide line
