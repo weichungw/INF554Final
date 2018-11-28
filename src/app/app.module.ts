@@ -9,7 +9,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material';
 
 // My components
-import { HomeComponent } from './home/home.component';
 import { PageMapComponent } from './page-map/page-map.component';
 import { DailyRiskComponent } from './daily-risk/daily-risk.component';
 import { DangerRatioComponent } from './danger-ratio/danger-ratio.component';
@@ -19,7 +18,6 @@ import { WelcomeComponent } from './welcome/welcome.component';
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
     PageMapComponent,
     DailyRiskComponent,
     DangerRatioComponent,

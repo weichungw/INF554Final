@@ -117,7 +117,7 @@ export class PageMapComponent implements OnInit {
           .attr('name',d=>d.properties.name)
           .attr("cx",d=>{return projection(d.geometry.coordinates)[0];})
           .attr("cy",d=>{return projection(d.geometry.coordinates)[1];})
-        .attr("r",d=>Math.sqrt(d.properties.count/5))
+          .attr("r",d=>Math.sqrt(d.properties.count/5))
           .style("fill","red")
           .style("opacity","0.5");
         this.registerToolTip();
@@ -230,6 +230,17 @@ export class PageMapComponent implements OnInit {
             .duration(200)
             .style("opacity",0);
       });
+  }
+
+  getColor(count:number):string{
+    if(count>100){
+      return "#f03b20";
+    }else if(count > 50 ){
+      return "#feb24c";
+    }else{
+      return "#ffeda0";
+    }
+
   }
 
   getTiles(x:number, y:number, z:number){

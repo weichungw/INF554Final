@@ -1,10 +1,14 @@
 {
+    "count": 184721,
     "children": [
         {
+            "count": 173900,
             "children": [
                 {
+                    "count": 169663,
                     "children": [
                         {
+                            "count": 143400,
                             "children": [
                                 {
                                     "count": 66383,
@@ -27,11 +31,11 @@
                                     "name": "Fatality"
                                 }
                             ],
-                            "count": 143400,
                             "ratio": 0.845,
                             "name": "Hit"
                         },
                         {
+                            "count": 26263,
                             "children": [
                                 {
                                     "count": 24841,
@@ -44,43 +48,44 @@
                                     "name": "Injured"
                                 }
                             ],
-                            "count": 26263,
                             "ratio": 0.155,
                             "name": "HitnRun"
                         }
                     ],
-                    "count": 169663,
                     "ratio": 0.976,
                     "name": "Collision"
                 },
                 {
+                    "count": 4237,
                     "children": [
                         {
                             "count": 1448,
+                            "title": "Wrong-Way-Driver",
                             "ratio": 0.342,
-                            "name": "Wrong-Way-Driver"
+                            "name": "WWD"
                         },
                         {
                             "count": 1435,
+                            "title": "Object-Flying-From-Vehicle",
                             "ratio": 0.339,
-                            "name": "Object-Flying-From-Vehicle"
+                            "name": "OBFFV"
                         },
                         {
                             "count": 1354,
+                            "title": "Defective-Signal",
                             "ratio": 0.32,
-                            "name": "Defective-Signal"
+                            "name": "DS"
                         }
                     ],
-                    "count": 4237,
                     "ratio": 0.024,
                     "name": "Others"
                 }
             ],
-            "count": 173900,
             "ratio": 0.941,
             "name": "Human"
         },
         {
+            "count": 10821,
             "children": [
                 {
                     "count": 2434,
@@ -103,11 +108,9 @@
                     "name": "Wind"
                 }
             ],
-            "count": 10821,
             "ratio": 0.059,
             "name": "Nature"
         }
     ],
-    "count": 184721,
     "name": "All"
 }

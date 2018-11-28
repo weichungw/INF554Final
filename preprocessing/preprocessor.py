@@ -1,6 +1,8 @@
 import csv
 import json
 from datetime import datetime
+import numpy as np
+import matplotlib.pyplot as plt
 
 from geojson import Point, Feature, FeatureCollection, dump
 
@@ -116,9 +118,9 @@ class Preprocessor:
                 {"name":"Injured","count":1422}]}
         Collision={"name":"Collision","children":[Hit,HitnRun]}
         Others={"name":"Others","children":[
-            {"name":"Wrong-Way-Driver", "count":1448},
-            {"name":"Object-Flying-From-Vehicle","count":1435},
-            {"name":"Defective-Signal","count":1354}]}
+            {"name": "WWD","title":"Wrong-Way-Driver", "count":1448},
+            {"name": "OBFFV","title":"Object-Flying-From-Vehicle","count":1435},
+            {"name": "DS","title":"Defective-Signal","count":1354}]}
         Human={"name":"Human","children":[Collision,Others]}
         Nature={"name":"Nature","children":[
             {"name":"Road-Kill","count":2434},
@@ -163,8 +165,8 @@ class Preprocessor:
 if __name__ == "__main__":
     rfile_name = "chp2017_edit.csv"
     prep = Preprocessor()
-    collision_type = prep.getCollisionTypes()
-    dataset = prep.readfile(rfile_name)
+    #collision_type = prep.getCollisionTypes()
+    #dataset = prep.readfile(rfile_name)
 
     #Dangers Ratio
     wfile_name = "dangerRatio/dangerRatioController.json"
@@ -184,6 +186,8 @@ if __name__ == "__main__":
     #wfile_name = 'dangerIntersection.geojson'
     #count_by_street=prep.countByStreet(dataset)
     #count_by_street.sort(key=lambda x: -1*x["count"])
+    #plt.hist([ s["count"] for s in count_by_street if s["count"]>=20])
+    #plt.show()
     #prep.exportGeojson(wfile_name,count_by_street)
     
 
