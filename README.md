@@ -11,7 +11,7 @@ Traffic Safety is always a highly concerned Topic in Los Angeles.
 
 ### PROJECT ARTIFACTS
 - Demonstration [http://www-scf.usc.edu/~weichunw/final/]
-- Presentation []
+- Presentation [https://github.com/INF554Fall18/project-datum/blob/master/INF554_pre_final.pdf]
 - transcript [https://github.com/INF554Fall18/project-datum/blob/master/transcript.md]
 - Report []
 - Overleaf []
