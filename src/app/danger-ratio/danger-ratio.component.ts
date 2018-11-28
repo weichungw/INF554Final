@@ -43,7 +43,7 @@ export class DangerRatioComponent implements OnInit {
       .attr("transform", "translate("+ (width/2) + ", " + (height/2) + ")" );
 
     d3.json("./mock-data/dangerRatio/"+rfile_name+".json").then((dataset:DangerPie[])=>{
-      var color_scale =  d3.scaleOrdinal(d3.schemeSet2)
+      var color_scale =  d3.scaleOrdinal(d3.schemePastel2)
         .domain(dataset.map((d)=>d["name"]));
 
       var arcs = d3.pie<DangerPie>()
@@ -91,8 +91,8 @@ export class DangerRatioComponent implements OnInit {
     
     // init required component
 
-    var color = d3.scaleSequential(d3.interpolateRdPu)
-      .domain([8, -1]);
+    var color = d3.scaleSequential(d3.interpolateGnBu)
+      .domain([-1,5]);
     var diameter = Math.min(width*0.9, height*0.9);
     var pack =d3.pack()
     .size([diameter,diameter]);
@@ -135,6 +135,7 @@ export class DangerRatioComponent implements OnInit {
         .attr("cx",node=>node.x)
         .attr("cy",node=>node.y)
         .attr("r",node=>node.r)
+        // .style("fill",function(d){return color(d.depth)})
         .style("fill",function(d){return d.children? color(d.depth):"white";});
 
       var leaves = g.selectAll(".leaf, .bubble")
@@ -176,36 +177,23 @@ export class DangerRatioComponent implements OnInit {
         .attr("alignment-baseline","middle")
         .attr("transform", node=>{
           if(node.children){
-            return  node.y-node.r*0.8}
-          else{
-              return node.y}})
-
-        .attr("x",node=>node.x)
-        // .attr("transform", node=>{
-        //   if(node.children){
-        //     return "translate("+node.x+", "+(node.y-node.r*0.8)+")"
-        //   }else{
-        //     return "translate("+node.x+", "+(node.y)+")"
-        //   }
-        // })
+            return "translate("+node.x+", "+(node.y-node.r*0.8)+")"
+          }else{
+            return "translate("+node.x+", "+(node.y)+")"
+          }
+        })
         .attr("pointer-events","none")
         .style("font-size","0.8em")
         .text(node=>node.data['name']);
 
  
       
-        console.log(roott.x, roott.y)
-        zoom(roott)
-        // zoomTo([roott.x, roott.y, roott.r*2]);
-        view = [roott.x, roott.y, roott.r*2]
+        // console.log(roott.x, roott.y)
+        // zoom(roott)
+        // // zoomTo([roott.x, roott.y, roott.r*2]);
+        // view = [roott.x, roott.y, roott.r*2]
         function zoomTo(v) {
-          console.log(roott.x, roott.y)
           const k =diameter/v[2]-1;
-        
-          // v=[0,0,roott.r*2]
-          // k=a
-          console.log(k)
-          // const k2 
           view = v;
           console.log("where is d")
           circles.attr("transform", d =>( console.log(d),`translate(${(d.x - v[0])*k},${(d.y- v[1])*k})`));
@@ -215,11 +203,8 @@ export class DangerRatioComponent implements OnInit {
           b_label.attr("transform", d=>{
           if(d.children){
            return  `translate(${(d.x - v[0])*k},${(d.y- d.r*0.8-v[1])*k})`
-        
-          // { return 'translate( ${(d.x - v[0]) * (k)}, ${(d.y-d.r*0.8-v[1])*k})'
           }else{
             return  `translate(${(d.x - v[0])*k},${(d.y- d.r*0.8-v[1])*k})`
-            // return "translate( ${(d.x - v[0]) * (k)} , ${(d.y-v[1])*k}"+")"
           }
         })
           // b_label.attr("transform", d =>( console.log(d),`translate(50,50)`));
@@ -249,11 +234,8 @@ export class DangerRatioComponent implements OnInit {
           //     .style("fill-opacity", d => d.parent === focus ? 1 : 0)
           //     .on("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
           //     .on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
-        }
-      
-
+        }    
     });
-
   }
 
 
@@ -282,7 +264,7 @@ export class DangerRatioComponent implements OnInit {
       .attr("transform", "translate("+ (width/2) + ", " + (height/2) + ")" );
 
     d3.json("./mock-data/dangerRatio/"+rfile_name+".json").then((dataset:DangerPie[])=>{
-      var color_scale =  d3.scaleOrdinal(d3.schemeSet2)
+      var color_scale =  d3.scaleOrdinal(d3.schemePastel2)
         .domain(dataset.map((d)=>d["name"]));
 
       var arcs = d3.pie<DangerPie>()
