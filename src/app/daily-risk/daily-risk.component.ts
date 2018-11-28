@@ -57,7 +57,7 @@ export class DailyRiskComponent implements OnInit {
     this.margin = margin;
     this.border = {
       width    : (c_width - margin.left - margin.right)*0.75,
-      height   : c_height - margin.top - margin.bottom,
+      height   : (c_height - margin.top - margin.bottom)*0.9,
       m_s_padding : (c_width - margin.left - margin.right)*0.05,
       s_width  : (c_width - margin.left - margin.right)*0.2,
       s_height : c_height - margin.top - margin.bottom
@@ -113,7 +113,7 @@ export class DailyRiskComponent implements OnInit {
 
       this.main_g.append('g')
           .attr('class',"axis axis--x")
-          .attr("transform", "translate(0,"+this.border.height+")")
+          .attr("transform", "translate(0,"+ this.border.height +")")
           .call(d3.axisBottom(x_scale));
 
       this.main_g.append('g')
@@ -121,16 +121,26 @@ export class DailyRiskComponent implements OnInit {
           .call(d3.axisLeft(y_scale).ticks(10));
 
 
-      //y-axes  title
+      //y-axes title
       this.canvas.append("text")
         .attr('class',"y-label")
         .attr("transform","rotate(-90)" )
-        .attr("y",0+ (this.margin.left/3))
+        .attr("y",0+(this.margin.left/3))
         .attr("x",0-(this.border.height/2))
         .attr("text-anchor","middle")
-        .style("fill","white")
+        .style("fill","black")
         .text("HDI");
+      
+      //x-axes title
+      this.canvas.append("text")
+        .attr('class',"x-label")
+        .attr("y",this.margin.top + this.border.height+35)
+        .attr("x",this.margin.left + (this.border.width/2))
+        .attr("text-anchor","middle")
+        .style("fill","black")
+        .text("Time");
 
+      // line
       this.line_generator = d3.line()
       //.curve(d3.curveBasis)
         .x(d=>x_scale(d["hour"]))
@@ -148,13 +158,13 @@ export class DailyRiskComponent implements OnInit {
 
       lines.append("path")
         .attr("d",data=>this.line_generator(data["counts"]))
-      .on("mouseover",function(d){
-        d3.select(this).transition().duration(200)
-          .style("stroke-width","5px")
-      }).on("mouseleave",function(d){
-        d3.select(this).transition().duration(200)
-          .style("stroke-width","2px")
-      });
+        // .on("mouseover",function(d){
+        //   d3.select(this).transition().duration(200)
+        //     .style("stroke-width","5px")
+        // }).on("mouseleave",function(d){
+        //   d3.select(this).transition().duration(200)
+        //     .style("stroke-width","2px")
+        // });
 
       lines.selectAll('circle')
         .data(d=>d["counts"]).enter()
@@ -163,6 +173,7 @@ export class DailyRiskComponent implements OnInit {
         .attr('cy',(d)=>y_scale(d["count"]))
         .attr('r',"2px");
       
+      // legend
       var legends= this.side_g.selectAll(".freeway-legend")
         .data(dataset).enter().append('g')
         .attr("class",d=>{return d["name"]+"-legend"} )
@@ -200,8 +211,9 @@ export class DailyRiskComponent implements OnInit {
           .text(d=>d["name"])
           .attr('text-anchor','start')
           .attr('alignment-baseline','middle')
-          .style("fill","white")
-          .attr('dx',8);
+          .style("fill","black")
+          .attr('dx',10)
+          .attr('dy',1.25);
 
         var myBoolean=new Boolean(true);
         // tooltips
@@ -214,40 +226,25 @@ export class DailyRiskComponent implements OnInit {
           .attr('class', "tooltips")
           .attr('id', (d)=>("tooltip-"+ d["hour"]))
           .text(d=>(d["count"]))
+          .attr("font-size","12px")
+          .style("fill", "black")
+          .style("stroke-width", "0.5px")
           .style('opacity', 0);
         
         // guide line
-        this.side_g.append("g")
-          .append("circle")
-          .attr('cx', 0)
-          .attr('cy', -30)
-          .attr("r", "5")
-          .attr("fill", "pink")
-          .attr("stroke", "pink")
+        d3.select("#guide_line")
           .on("click", function(d){
             if (myBoolean == true){
-              myBoolean = false
-              d3.selectAll(".tooltips").style('opacity', 0);
-              var circle = d3.select(this);
-              circle.transition()
-                .duration(100)
-                .style("fill", myBoolean==true?"pink":"white");
+              d3.selectAll(".guideLine").attr("opacity", 0);
+              myBoolean = false;
             } else {
-              myBoolean = true
-              d3.selectAll(".tooltips").style('opacity', 0);
-              var circle = d3.select(this);
-              circle.transition()
-                .duration(100)
-                .style("fill", myBoolean==true?"pink":"white");
+              myBoolean = true;
             }
+            d3.selectAll(".tooltips").style('opacity', 0);
+            d3.select("#guide_line").transition()
+              .duration(100)
+              .style("opacity", myBoolean==true?"1":"0.8");
           });
-
-        this.side_g.append("g")
-          .append("text")
-          .text("Guide line")
-          .style("fill","white")
-          .attr('dx',8)
-          .attr('dy',-28)
 
         var guideLine = this.main_g.append("g")
           .append("line")
@@ -256,7 +253,8 @@ export class DailyRiskComponent implements OnInit {
           .attr("y1", 0)
           .attr("x2", 0)
           .attr("y2", this.border.height)
-          .attr("stroke", "lightgray")
+          .attr("fill", "black")
+          .attr("stroke","gray")
           .attr("stroke-width","2px")
           .attr("opacity", 1)
           
@@ -275,7 +273,7 @@ export class DailyRiskComponent implements OnInit {
             .attr("class", "overlay")
             .attr("width", this.border.width)
             .attr("height", this.border.height)
-            .on("mouseover", function() { focus.style("display", null); })
+            .on("mouseover", function() { focus.style("display", "none"); })
             .on("mouseout", function() { focus.style("display", "none"); })
             .on("mousemove", scalePointPosition);
 
@@ -293,13 +291,9 @@ export class DailyRiskComponent implements OnInit {
             d3.selectAll("#tooltip-" + yPos).style('opacity', 1);	    
           } else {
             d3.selectAll(".guideLine")
-              .attr("opacity", 0)
+              .attr("opacity", 0);
           }
-          
-          
-          
       }
-
     })
   }
 
@@ -409,7 +403,7 @@ export class DailyRiskComponent implements OnInit {
     var margin = this.margin;
     this.border = {
       width    : (c_width - margin.left - margin.right)*0.75,
-      height   : c_height - margin.top - margin.bottom,
+      height   : (c_height - margin.top - margin.bottom)*0.9,
       m_s_padding : (c_width - margin.left - margin.right)*0.05,
       s_width  : (c_width - margin.left - margin.right)*0.2,
       s_height : c_height - margin.top - margin.bottom
