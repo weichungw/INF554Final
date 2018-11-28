@@ -43,7 +43,7 @@ export class DangerRatioComponent implements OnInit {
       .attr("transform", "translate("+ (width/2) + ", " + (height/2) + ")" );
 
     d3.json("./mock-data/dangerRatio/"+rfile_name+".json").then((dataset:DangerPie[])=>{
-      var color_scale =  d3.scaleOrdinal(d3.schemeDark2)
+      var color_scale =  d3.scaleOrdinal(d3.schemeSet2)
         .domain(dataset.map((d)=>d["name"]));
 
       var arcs = d3.pie<DangerPie>()
@@ -113,14 +113,14 @@ export class DangerRatioComponent implements OnInit {
       var circles =g.selectAll(".bubble")
         .data(nodes)
         .enter().append("circle")
-        .attr("class",node=>node.children?"bubble":"leaf")
+        .attr("class",node=>node.children?("bubble "+node["data"]["name"]+"-bubble"):"leaf")
         .attr("cx",node=>node.x)
         .attr("cy",node=>node.y)
         .attr("r",node=>node.r)
         .style("fill",function(d){return d.children? color(d.depth):"white";});
 
       var leaves = g.selectAll(".leaf, .bubble")
-      .on("mouseenter", function(node:LeafNode){
+        .on("mouseenter", (node:LeafNode)=>{
           tooltip.html("name:"+node.data["name"]+"<br/>"
                   +"Ratio:"+node.data["ratio"])
             .style("left",(d3.event.pageX +10)+ "px")
@@ -129,11 +129,19 @@ export class DangerRatioComponent implements OnInit {
           tooltip.transition()
             .duration(200)
             .style("opacity",0.9);
+          d3.select("."+node.data.name+"-bubble") 
+            .attr("stroke","black")
+            .attr("stoke-width",2)
+            .attr("opacity",1)
 
-        }).on("mouseleave",function(node){
+        }).on("mouseleave",(node:LeafNode)=>{
           tooltip.transition()
             .duration(500)
             .style("opacity",0);
+          d3.select("."+node.data.name+"-bubble") 
+            .attr("stroke","white")
+            .attr("stoke-width",0.8)
+            .attr("opacity","0.5")
         });
       g.selectAll(".bubble")
         .on("click", (node:LeafNode)=>{
@@ -191,7 +199,7 @@ export class DangerRatioComponent implements OnInit {
       .attr("transform", "translate("+ (width/2) + ", " + (height/2) + ")" );
 
     d3.json("./mock-data/dangerRatio/"+rfile_name+".json").then((dataset:DangerPie[])=>{
-      var color_scale =  d3.scaleOrdinal(d3.schemeDark2)
+      var color_scale =  d3.scaleOrdinal(d3.schemeSet2)
         .domain(dataset.map((d)=>d["name"]));
 
       var arcs = d3.pie<DangerPie>()
