@@ -128,7 +128,7 @@ export class DailyRiskComponent implements OnInit {
         .attr("y",0+ (this.margin.left/3))
         .attr("x",0-(this.border.height/2))
         .attr("text-anchor","middle")
-        .style("fill","white")
+        .style("fill","black")
         .text("HDI");
 
       this.line_generator = d3.line()
@@ -200,7 +200,7 @@ export class DailyRiskComponent implements OnInit {
           .text(d=>d["name"])
           .attr('text-anchor','start')
           .attr('alignment-baseline','middle')
-          .style("fill","white")
+          .style("fill","black")
           .attr('dx',8);
 
         var myBoolean=new Boolean(true);
