@@ -1,17 +1,4 @@
-h1, div {
+h1 {
     text-align: center;
 }
 
-span {
-    border-style: solid;
-    border-color: white;
-}
-
-div {
-    display: inline-block;
-}
-
-#description {
-    width: 100%;
-    text-align: center; 
-}
