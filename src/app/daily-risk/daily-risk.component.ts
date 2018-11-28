@@ -161,7 +161,7 @@ export class DailyRiskComponent implements OnInit {
         .append('circle')
         .attr('cx',(d)=>x_scale(d["hour"]))
         .attr('cy',(d)=>y_scale(d["count"]))
-        .attr('r',"3px");
+        .attr('r',"2px");
       
       var legends= this.side_g.selectAll(".freeway-legend")
         .data(dataset).enter().append('g')
@@ -202,6 +202,103 @@ export class DailyRiskComponent implements OnInit {
           .attr('alignment-baseline','middle')
           .style("fill","white")
           .attr('dx',8);
+
+        var myBoolean=new Boolean(true);
+        // tooltips
+        lines.selectAll('.tooltips')
+          .data(d=>d["counts"])
+          .enter()
+          .append('text')
+          .attr('x',(d)=>x_scale(d["hour"]))
+          .attr('y',(d)=>y_scale(d["count"]))
+          .attr('class', "tooltips")
+          .attr('id', (d)=>("tooltip-"+ d["hour"]))
+          .text(d=>(console.log(d),d["count"]))
+          .style('opacity', 0);
+        
+        // guide line
+        this.side_g.append("g")
+          .append("circle")
+          .attr('cx', 0)
+          .attr('cy', -30)
+          .attr("r", "5")
+          .attr("fill", "pink")
+          .attr("stroke", "pink")
+          .on("click", function(d){
+            if (myBoolean == true){
+              myBoolean = false
+              d3.selectAll(".tooltips").style('opacity', 0);
+              var circle = d3.select(this);
+              circle.transition()
+                .duration(100)
+                .style("fill", myBoolean==true?"pink":"white");
+            } else {
+              myBoolean = true
+              d3.selectAll(".tooltips").style('opacity', 0);
+              var circle = d3.select(this);
+              circle.transition()
+                .duration(100)
+                .style("fill", myBoolean==true?"pink":"white");
+            }
+          });
+
+        this.side_g.append("g")
+          .append("text")
+          .text("Guide line")
+          .style("fill","white")
+          .attr('dx',8)
+          .attr('dy',-28)
+
+        var guideLine = this.main_g.append("g")
+          .append("line")
+          .attr("class", "guideLine")
+          .attr("x1", 0)
+          .attr("y1", 0)
+          .attr("x2", 0)
+          .attr("y2", this.border.height)
+          .attr("stroke", "lightgray")
+          .attr("stroke-width","2px")
+          .attr("opacity", 1)
+          
+        var focus = this.main_g.append("g")
+          .attr("class", "focus")
+          .style("display", "none");
+
+        focus.append("circle")
+            .attr("r", 4.5);
+
+        focus.append("text")
+            .attr("x", 9)
+            .attr("dy", ".35em");
+
+        this.main_g.append("rect")
+            .attr("class", "overlay")
+            .attr("width", this.border.width)
+            .attr("height", this.border.height)
+            .on("mouseover", function() { focus.style("display", null); })
+            .on("mouseout", function() { focus.style("display", "none"); })
+            .on("mousemove", scalePointPosition);
+
+        function scalePointPosition() {
+          if (myBoolean == true) {
+            d3.selectAll(".guideLine")
+              .attr("opacity", 1)
+            var xPos = d3.mouse(this)[0];
+            var domain = x_scale.domain(); 
+            var range = x_scale.range();
+            var rangePoints = d3.range(range[0], range[1], x_scale.step())
+            var yPos = domain[d3.bisect(rangePoints, xPos) -1];
+            guideLine.transition().duration(10).attr("x1", d3.mouse(this)[0]).attr("x2", d3.mouse(this)[0])
+            d3.selectAll(".tooltips").style('opacity', 0)
+            d3.selectAll("#tooltip-" + yPos).style('opacity', 1);	    
+          } else {
+            d3.selectAll(".guideLine")
+              .attr("opacity", 0)
+          }
+          
+          
+          
+      }
 
     })
   }
