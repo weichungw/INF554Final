@@ -215,6 +215,7 @@ export class DailyRiskComponent implements OnInit {
           .attr('dx',10)
           .attr('dy',1.25);
 
+
         var myBoolean=new Boolean(true);
         // tooltips
         lines.selectAll('.tooltips')
