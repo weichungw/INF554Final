@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 
 export interface LeafNode {data:DangerBubble ,x:number, y:number}
-export interface DangerBubble{count:number, name: String, ratio:number}
+export interface DangerBubble{count:number, name: string, ratio:number}
 export interface DangerPie{count:number, name:string, ratio:number}
 @Component({
   selector: 'app-danger-ratio',
@@ -15,9 +15,10 @@ export class DangerRatioComponent implements OnInit {
 
   ngOnInit() {
     this.initHierarchy();
-    this.initRatio();
+    this.initRatio("All");
   }
-  initRatio(){
+
+  initRatio(rfile_name:string){
     var div =d3.select("#danger-ratio-div");
     var c_width:number = 600;
     var c_height:number =600;
@@ -41,13 +42,12 @@ export class DangerRatioComponent implements OnInit {
     var  g= canvas.append("g")
       .attr("transform", "translate("+ (width/2) + ", " + (height/2) + ")" );
 
-    d3.json("./mock-data/dangerRatio2.json").then((dataset:DangerPie[])=>{
+    d3.json("./mock-data/dangerRatio/"+rfile_name+".json").then((dataset:DangerPie[])=>{
       var color_scale =  d3.scaleOrdinal(d3.schemeDark2)
         .domain(dataset.map((d)=>d["name"]));
 
       var arcs = d3.pie<DangerPie>()
         .value((d:DangerPie)=>d["count"])(dataset);
-
       var pizzas=g.selectAll('.pizza')
         .data(arcs)
         .enter().append("path")
@@ -76,8 +76,8 @@ export class DangerRatioComponent implements OnInit {
 
   initHierarchy(){
     var div = d3.select("#danger-control-div");
-    var c_width:number = 800;
-    var c_height:number = 800;
+    var c_width:number = 600;
+    var c_height:number = 600;
     var canvas = div.append("svg")
       .attr('width',c_width)
       .attr('height',c_height);
@@ -100,10 +100,11 @@ export class DangerRatioComponent implements OnInit {
       .attr("padding","2em")
       .style("background","lightsteelblue")
       .style("font","1em sans-serif")
-      .attr("position","absolute")
+      .style("position","absolute")
       .style("text-align","center");
 
-    d3.json("./mock-data/dangerRatio.json").then(function(data){
+    var danger_component =this;
+    d3.json("./mock-data/dangerRatio/dangerRatioController.json").then(function(data){
       var root = d3.hierarchy(data)
         .sum(function(d){ return Math.sqrt(d['count']);})
         .sort(function(a,b){ return b.value-a.value;});
@@ -120,7 +121,6 @@ export class DangerRatioComponent implements OnInit {
 
       var leaves = g.selectAll(".leaf, .bubble")
       .on("mouseenter", function(node:LeafNode){
-          console.log(node)
           tooltip.html("name:"+node.data["name"]+"<br/>"
                   +"Ratio:"+node.data["ratio"])
             .style("left",(d3.event.pageX +10)+ "px")
@@ -135,6 +135,13 @@ export class DangerRatioComponent implements OnInit {
             .duration(500)
             .style("opacity",0);
         });
+      g.selectAll(".bubble")
+        .on("click", (node:LeafNode)=>{
+          danger_component.updateRatio(node.data["name"]);
+
+        })
+
+
       var b_label = g.selectAll(".bubble-label")
         .data(nodes)
         .enter().append("text")
@@ -142,7 +149,6 @@ export class DangerRatioComponent implements OnInit {
         .attr("text-anchor","middle")
         .attr("alignment-baseline","middle")
         .attr("transform", node=>{
-          console.log(node)
           if(node.children){
             return "translate("+node.x+", "+(node.y-node.r*0.8)+")"
           }else{
@@ -156,6 +162,80 @@ export class DangerRatioComponent implements OnInit {
         .text(node=>node.data['name']);
 
     });
+
+  }
+
+
+  updateRatio(rfile_name:string){
+    var div =d3.select("#danger-ratio-div");
+    var c_width:number = 600;
+    var c_height:number =600;
+
+    var canvas = div.select('svg')
+      .attr("width", c_width)
+      .attr('height',c_height);
+
+    var margin= {top:20, right:20, bottom:20, left:20};
+    var width: number= c_width - margin.left - margin.right;
+    var height: number= c_height -margin.top - margin.bottom;
+  
+    var arc_generator = d3.arc()
+      .innerRadius(0)
+      .outerRadius(Math.min(width,height)/2 * 0.9);
+
+    var arc_label = d3.arc()
+      .innerRadius(Math.min(width,height)/2 * 0.6)
+      .outerRadius(Math.min(width,height)/2 * 0.8);
+
+    var  g= canvas.select("g")
+      .attr("transform", "translate("+ (width/2) + ", " + (height/2) + ")" );
+
+    d3.json("./mock-data/dangerRatio/"+rfile_name+".json").then((dataset:DangerPie[])=>{
+      var color_scale =  d3.scaleOrdinal(d3.schemeDark2)
+        .domain(dataset.map((d)=>d["name"]));
+
+      var arcs = d3.pie<DangerPie>()
+        .value((d:DangerPie)=>d["count"])(dataset);
+
+
+      var pizzas=g.selectAll('.pizza')
+        .data(arcs)
+      pizzas.enter().append("path")
+        .attr("class",(d)=>{return 'pizza '+ d.data["name"]+"-pizza"})
+        .attr("stroke","white")
+        .attr("d",<any>arc_generator)
+        .style("fill",(d)=>color_scale(d.data["name"]))
+        .attr("opacity",0.7)
+      pizzas
+        .attr("class",(d)=>{return 'pizza '+ d.data["name"]+"-pizza"})
+        .attr("stroke","white")
+        .attr("d",<any>arc_generator)
+        .style("fill",(d)=>color_scale(d.data["name"]))
+        .attr("opacity",0.7)
+      pizzas.append("title")
+        .text((d)=>{return d.data["name"]+" : "+ d.data["ratio"].toFixed(3);})
+      pizzas.exit().remove();
+
+      var pieLabel=g.selectAll(".pie-label")
+        .data(arcs);
+      pieLabel
+        .attr("class","pie-label")
+        .attr("text-anchor","middle")
+        .attr("alignment-baseline","middle")
+        .attr("transform", function(d:any){ return "translate("+arc_label.centroid(d)+")";})
+        .text((d)=>{return d.data["name"]+" : "+ d.data["ratio"].toFixed(3);})
+      pieLabel
+        .enter().append("text")
+        .attr("class","pie-label")
+        .attr("text-anchor","middle")
+        .attr("alignment-baseline","middle")
+        .attr("transform", function(d:any){ return "translate("+arc_label.centroid(d)+")";})
+        .text((d)=>{return d.data["name"]+" : "+ d.data["ratio"].toFixed(3);})
+      pieLabel.exit().remove();
+
+
+
+    })
 
   }
 

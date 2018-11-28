@@ -133,6 +133,7 @@ class Preprocessor:
         self.updateRatio(Human)
         self.updateRatio(Nature)
         self.updateRatio(All)
+
         return All
 
     def updateRatio(self,data):
@@ -142,6 +143,12 @@ class Preprocessor:
         data["count"]=count
         for child in data["children"]:
             child["ratio"]=round(child["count"]/count,3)
+       
+        shallow = [{"name":child["name"],
+                    "count":child["count"],
+                    "ratio":child["ratio"]} for child in data["children"] ]
+        with open("dangerRatio/"+data["name"]+".json",'w') as wfile:
+            json.dump(shallow,wfile)
 
         
 
@@ -160,7 +167,7 @@ if __name__ == "__main__":
     dataset = prep.readfile(rfile_name)
 
     #Dangers Ratio
-    wfile_name = "dangerRatio.json"
+    wfile_name = "dangerRatio/dangerRatioController.json"
     ratio=prep.getDangerRatio()
     with open(wfile_name, 'w') as wfile:
         json.dump(ratio,wfile, indent=4)
