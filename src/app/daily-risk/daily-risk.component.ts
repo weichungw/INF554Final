@@ -134,7 +134,7 @@ export class DailyRiskComponent implements OnInit {
       //x-axes title
       this.canvas.append("text")
         .attr('class',"x-label")
-        .attr("y",this.margin.top + this.border.height+35)
+        .attr("y",this.margin.top + this.border.height*1.1)
         .attr("x",this.margin.left + (this.border.width/2))
         .attr("text-anchor","middle")
         .style("fill","black")
@@ -171,7 +171,7 @@ export class DailyRiskComponent implements OnInit {
         .append('circle')
         .attr('cx',(d)=>x_scale(d["hour"]))
         .attr('cy',(d)=>y_scale(d["count"]))
-        .attr('r',"2px");
+        .attr('r',2);
       
       // legend
       var legends= this.side_g.selectAll(".freeway-legend")
@@ -233,23 +233,23 @@ export class DailyRiskComponent implements OnInit {
           .style('opacity', 0);
         
         // guide line
-        d3.select("#guide_line")
+        d3.select("#guide_line_button")
           .on("click", function(d){
             if (myBoolean == true){
-              d3.selectAll(".guideLine").attr("opacity", 0);
+              d3.selectAll("#guide_line").attr("opacity", 0);
               myBoolean = false;
             } else {
               myBoolean = true;
             }
             d3.selectAll(".tooltips").style('opacity', 0);
-            d3.select("#guide_line").transition()
+            d3.select("#guide_line_button").transition()
               .duration(100)
               .style("opacity", myBoolean==true?"1":"0.8");
           });
 
-        var guideLine = this.main_g.append("g")
+        var guide_line = this.main_g.append("g")
           .append("line")
-          .attr("class", "guideLine")
+          .attr("id", "guide_line")
           .attr("x1", 0)
           .attr("y1", 0)
           .attr("x2", 0)
@@ -280,18 +280,18 @@ export class DailyRiskComponent implements OnInit {
 
         function scalePointPosition() {
           if (myBoolean == true) {
-            d3.selectAll(".guideLine")
+            d3.selectAll("#guide_line")
               .attr("opacity", 1)
             var xPos = d3.mouse(this)[0];
             var domain = x_scale.domain(); 
             var range = x_scale.range();
             var rangePoints = d3.range(range[0], range[1], x_scale.step())
             var yPos = domain[d3.bisect(rangePoints, xPos) -1];
-            guideLine.transition().duration(10).attr("x1", d3.mouse(this)[0]).attr("x2", d3.mouse(this)[0])
+            guide_line.transition().duration(10).attr("x1", d3.mouse(this)[0]).attr("x2", d3.mouse(this)[0])
             d3.selectAll(".tooltips").style('opacity', 0)
             d3.selectAll("#tooltip-" + yPos).style('opacity', 1);	    
           } else {
-            d3.selectAll(".guideLine")
+            d3.selectAll("#guide_line")
               .attr("opacity", 0);
           }
       }
@@ -348,7 +348,7 @@ export class DailyRiskComponent implements OnInit {
       .append('circle')
       .attr('cx',(d)=>x_scale(d["hour"]))
       .attr('cy',(d)=>y_scale(d["count"]))
-      .attr('r',"3px");
+      .attr('r',2);
 
     this.side_g.selectAll(".freeway-legend").remove();
     var legends= this.side_g.selectAll(".freeway-legend")
@@ -377,19 +377,105 @@ export class DailyRiskComponent implements OnInit {
 
         circle.transition()
           .duration(100)
-          .style("fill", state=="1"?"white":color_scale(d["name"]));
+          .style("fill", state=="1"?"black":color_scale(d["name"]));
 
         line.transition()
           .duration(200)
           .attr("opacity", state=="1"?0:1);
       });
 
-      legends.append('text')
-        .text(d=>d["name"])
-        .attr('text-anchor','start')
-        .attr('alignment-baseline','middle')
-        .style("fill","white")
-        .attr('dx',8);
+    legends.append('text')
+      .text(d=>d["name"])
+      .attr('text-anchor','start')
+      .attr('alignment-baseline','middle')
+      .style("fill","black")
+      .attr('dx',10)
+      .attr('dy',1.25);
+    
+    
+    d3.select("#guide_line_button").transition()
+      .style("opacity", "1");
+    d3.select("#guide_line").remove();
+
+    var myBoolean=new Boolean(true);
+    // tooltips
+    lines.selectAll('.tooltips')
+      .data(d=>d["counts"])
+      .enter()
+      .append('text')
+      .attr('x',(d)=>x_scale(d["hour"]))
+      .attr('y',(d)=>y_scale(d["count"]))
+      .attr('class', "tooltips")
+      .attr('id', (d)=>("tooltip-"+ d["hour"]))
+      .text(d=>(d["count"]))
+      .attr("font-size","12px")
+      .style("fill", "black")
+      .style("stroke-width", "0.5px")
+      .style('opacity', 0);
+    
+    // guide line
+    d3.select("#guide_line_button")
+      .on("click", function(d){
+        if (myBoolean == true){
+          d3.selectAll("#guide_line").attr("opacity", 0);
+          myBoolean = false;
+        } else {
+          myBoolean = true;
+        }
+        d3.selectAll(".tooltips").style('opacity', 0);
+        d3.select("#guide_line_button").transition()
+          .duration(100)
+          .style("opacity", myBoolean==true?"1":"0.8");
+      });
+
+    var guide_line = this.main_g.append("g")
+      .append("line")
+      .attr("id", "guide_line")
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", 0)
+      .attr("y2", this.border.height)
+      .attr("fill", "black")
+      .attr("stroke","gray")
+      .attr("stroke-width","2px")
+      .attr("opacity", 1)
+      
+    var focus = this.main_g.append("g")
+      .attr("class", "focus")
+      .style("display", "none");
+
+    focus.append("circle")
+        .attr("r", 4.5);
+
+    focus.append("text")
+        .attr("x", 9)
+        .attr("dy", ".35em");
+
+    this.main_g.append("rect")
+        .attr("class", "overlay")
+        .attr("width", this.border.width)
+        .attr("height", this.border.height)
+        .on("mouseover", function() { focus.style("display", "none"); })
+        .on("mouseout", function() { focus.style("display", "none"); })
+        .on("mousemove", scalePointPosition);
+
+    function scalePointPosition() {
+      if (myBoolean == true) {
+        d3.selectAll("#guide_line")
+          .attr("opacity", 1)
+        var xPos = d3.mouse(this)[0];
+        var domain = x_scale.domain(); 
+        var range = x_scale.range();
+        var rangePoints = d3.range(range[0], range[1], x_scale.step())
+        var yPos = domain[d3.bisect(rangePoints, xPos) -1];
+        guide_line.transition().duration(10).attr("x1", d3.mouse(this)[0]).attr("x2", d3.mouse(this)[0])
+        d3.selectAll(".tooltips").style('opacity', 0)
+        d3.selectAll("#tooltip-" + yPos).style('opacity', 1);	    
+      } else {
+        d3.selectAll("#guide_line")
+          .attr("opacity", 0);
+      }
+    }
 
   }
   
@@ -429,7 +515,24 @@ export class DailyRiskComponent implements OnInit {
       .domain(dataset.map(d=>d.name))
       .rangeRound([30,this.border.height-30])
 
-    
+    //y-axes title
+    this.canvas.select("y-label")
+      // .attr('class',"y-label")
+      // .attr("transform","rotate(-90)" )
+      .attr("y",0+(this.margin.left/3))
+      .attr("x",0-(this.border.height/2))
+      // .attr("text-anchor","middle")
+      // .style("fill","black")
+      // .text("HDI");
+  
+  //x-axes title
+  this.canvas.select("x-label")
+    // .attr('class',"x-label")
+    .attr("y",this.margin.top + this.border.height*1.1)
+    .attr("x",this.margin.left + (this.border.width/2))
+    // .attr("text-anchor","middle")
+    // .style("fill","black")
+    // .text("Time");
 
     this.main_g.select(".axis--x")
         .attr("transform", "translate(0,"+this.border.height+")")
@@ -452,6 +555,92 @@ export class DailyRiskComponent implements OnInit {
                         
     var legends=this.side_g.selectAll(".freeway-legend")
       .attr("transform",d=>"translate(0,"+legend_y_scale(d["name"])+")")
+    
+    d3.select("#guide_line_button").transition()
+      .style("opacity", "1");
+    d3.select("#guide_line").remove();
+    d3.selectAll(".tooltips").remove();
+
+    var myBoolean=new Boolean(true);
+    // tooltips
+    lines.selectAll('.tooltips')
+      .data(d=>d["counts"])
+      .enter()
+      .append('text')
+      .attr('x',(d)=>x_scale(d["hour"]))
+      .attr('y',(d)=>y_scale(d["count"]))
+      .attr('class', "tooltips")
+      .attr('id', (d)=>("tooltip-"+ d["hour"]))
+      .text(d=>(d["count"]))
+      .attr("font-size","12px")
+      .style("fill", "black")
+      .style("stroke-width", "0.5px")
+      .style('opacity', 0);
+    
+    // guide line
+    d3.select("#guide_line_button")
+      .on("click", function(d){
+        if (myBoolean == true){
+          d3.selectAll("#guide_line").attr("opacity", 0);
+          myBoolean = false;
+        } else {
+          myBoolean = true;
+        }
+        d3.selectAll(".tooltips").style('opacity', 0);
+        d3.select("#guide_line_button").transition()
+          .duration(100)
+          .style("opacity", myBoolean==true?"1":"0.8");
+      });
+
+    var guide_line = this.main_g.append("g")
+      .append("line")
+      .attr("id", "guide_line")
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", 0)
+      .attr("y2", this.border.height)
+      .attr("fill", "black")
+      .attr("stroke","gray")
+      .attr("stroke-width","2px")
+      .attr("opacity", 1)
+      
+    var focus = this.main_g.append("g")
+      .attr("class", "focus")
+      .style("display", "none");
+
+    focus.append("circle")
+        .attr("r", 4.5);
+
+    focus.append("text")
+        .attr("x", 9)
+        .attr("dy", ".35em");
+
+    this.main_g.append("rect")
+        .attr("class", "overlay")
+        .attr("width", this.border.width)
+        .attr("height", this.border.height)
+        .on("mouseover", function() { focus.style("display", "none"); })
+        .on("mouseout", function() { focus.style("display", "none"); })
+        .on("mousemove", scalePointPosition);
+
+    function scalePointPosition() {
+      if (myBoolean == true) {
+        d3.selectAll("#guide_line")
+          .attr("opacity", 1)
+        var xPos = d3.mouse(this)[0];
+        var domain = x_scale.domain(); 
+        var range = x_scale.range();
+        var rangePoints = d3.range(range[0], range[1], x_scale.step())
+        var yPos = domain[d3.bisect(rangePoints, xPos) -1];
+        guide_line.transition().duration(10).attr("x1", d3.mouse(this)[0]).attr("x2", d3.mouse(this)[0])
+        d3.selectAll(".tooltips").style('opacity', 0)
+        d3.selectAll("#tooltip-" + yPos).style('opacity', 1);	    
+      } else {
+        d3.selectAll("#guide_line")
+          .attr("opacity", 0);
+      }
+    }
+    
 
   }
 
